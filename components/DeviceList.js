@@ -3,7 +3,7 @@ import ErrorMessage from './ErrorMessage'
 // import PostUpvoter from './PostUpvoter'
 
 export const ALL_DEVICES_QUERY = gql`
-  query probeList { probeList }
+  query probeList { probeList { physAddr } }
 `
 
 // export const allPostsQueryVars = {
@@ -42,9 +42,9 @@ export default function DeviceList() {
     <section>
       <ul>
         {allDevices.map(device => (
-          <li key={device}>
+          <li key={device.physAddr}>
             <div>
-              <span>{device}. </span>
+              <span>{device.physAddr}. </span>
             </div>
           </li>
         ))}

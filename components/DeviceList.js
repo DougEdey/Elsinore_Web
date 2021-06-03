@@ -3,7 +3,15 @@ import ErrorMessage from './ErrorMessage'
 // import PostUpvoter from './PostUpvoter'
 
 export const ALL_DEVICES_QUERY = gql`
-  query probeList { probeList { physAddr } }
+  query deviceList {
+    temperatureControllers {
+      name
+      tempProbeDetails {
+        name
+        reading
+      }
+    }
+  }
 `
 
 // export const allPostsQueryVars = {
@@ -20,6 +28,8 @@ export default function DeviceList() {
       // the "networkStatus" changes, so we are able to know if it is fetching
       // more data
       notifyOnNetworkStatusChange: true,
+      pollInterval: 500,
+      credentials: 'same-origin',
     }
   )
 
@@ -33,19 +43,24 @@ export default function DeviceList() {
   //   })
   // }
 
-  if (error) return <ErrorMessage message="Error loading devices." />
-  if (loading) return <div>Loading</div>
+  if (error) {
+    return <ErrorMessage message="Error loading devices." />
+  }
+  if (loading && !data) return <div>Loading</div>
 
-  const allDevices = data.probeList
+  const allDevices = data.temperatureControllers
 
   return (
     <section>
       <ul>
-        {allDevices.map(device => (
-          <li key={device.physAddr}>
+        {allDevices.map(temperatureController => (
+          <li key={temperatureController.name}>
             <div>
-              <span>{device.physAddr}. </span>
+              <span>{temperatureController.name}.</span>
             </div>
+            {temperatureController.tempProbeDetails.map(probe => {
+              return <span key={probe.name}>{probe.name} - {probe.reading}</span>
+            })}
           </li>
         ))}
       </ul>      

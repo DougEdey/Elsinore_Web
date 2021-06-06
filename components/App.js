@@ -1,8 +1,11 @@
-export default function App({ children }) {
+import PropTypes from 'prop-types'
+
+export default function App ({ children }) {
   return (
     <main>
       {children}
-      <style jsx global>{`
+      <style jsx global>
+        {`
         * {
           font-family: Menlo, Monaco, 'Lucida Console', 'Liberation Mono',
             'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Courier New',
@@ -41,7 +44,12 @@ export default function App({ children }) {
         button:focus {
           outline: none;
         }
-      `}</style>
+      `}
+      </style>
     </main>
   )
+}
+
+App.propTypes = {
+  children: PropTypes.arrayOf(PropTypes.element.isRequired),
 }

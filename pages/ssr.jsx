@@ -1,11 +1,9 @@
-import App from '../components/App'
-import InfoBox from '../components/InfoBox'
-import Header from '../components/Header'
-import Submit from '../components/Submit'
+import App from '../components/App';
+import Header from '../components/Header';
 import DeviceList, {
   ALL_DEVICES_QUERY,
-} from '../components/DeviceList'
-import { initializeApollo, addApolloState } from '../lib/apolloClient'
+} from '../components/DeviceList';
+import { initializeApollo, addApolloState } from '../lib/apolloClient';
 
 const SSRPage = () => (
   <App>

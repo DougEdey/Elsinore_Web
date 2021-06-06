@@ -23,23 +23,25 @@ export default function DeviceList () {
   )
 
   if (error) {
-    return <ErrorMessage message="Error loading devices." />;
+    return <ErrorMessage message="Error loading devices." />
   }
-  if (loading && !data) return <div>Loading</div>;
+  if (loading && !data) return <div>Loading</div>
 
-  const allDevices = data.temperatureControllers;
+  const allDevices = data.temperatureControllers
 
   return (
     <section>
       <ul>
-        {allDevices.map(temperatureController, () => (
+        {allDevices.map(temperatureController => (
           <li key={temperatureController.name}>
             <div>
               <span>{temperatureController.name}.</span>
             </div>
-            {temperatureController.tempProbeDetails.map(probe, () => {
-              return <span key={probe.name}>{probe.name} - {probe.reading}</span>
-            },)}
+            {
+              temperatureController.tempProbeDetails.map(probe => {
+                return <span key={probe.name}>{probe.name} - {probe.reading}</span>
+              })
+            }
           </li>
         ),)}
       </ul>

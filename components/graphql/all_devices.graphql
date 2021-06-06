@@ -1,0 +1,9 @@
+query deviceList {
+  temperatureControllers {
+    name
+    tempProbeDetails {
+      name
+      reading
+    }
+  }
+}

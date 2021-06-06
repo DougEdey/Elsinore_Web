@@ -51,5 +51,5 @@ export default function App ({ children }) {
 }
 
 App.propTypes = {
-  children: PropTypes.arrayOf(PropTypes.element.isRequired),
+  children: PropTypes.any,
 }

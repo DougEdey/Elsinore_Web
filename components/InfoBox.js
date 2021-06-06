@@ -1,6 +1,9 @@
+import PropTypes from 'prop-types'
+
 const InfoBox = ({ children }) => (
   <div className="info">
-    <style jsx>{`
+    <style jsx>
+      {`
       .info {
         margin-top: 20px;
         margin-bottom: 20px;
@@ -9,9 +12,14 @@ const InfoBox = ({ children }) => (
         border-top: 1px solid #ececec;
         border-bottom: 1px solid #ececec;
       }
-    `}</style>
+    `}
+    </style>
     {children}
   </div>
 )
 
 export default InfoBox
+
+InfoBox.propTypes = {
+  children: PropTypes.arrayOf(PropTypes.element.isRequired),
+}

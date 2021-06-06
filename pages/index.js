@@ -1,7 +1,5 @@
 import App from '../components/App'
-import InfoBox from '../components/InfoBox'
 import Header from '../components/Header'
-import Submit from '../components/Submit'
 import DeviceList, {
   ALL_DEVICES_QUERY,
 } from '../components/DeviceList'
@@ -14,7 +12,7 @@ const IndexPage = () => (
   </App>
 )
 
-export async function getStaticProps() {
+export async function getStaticProps () {
   const apolloClient = initializeApollo()
 
   await apolloClient.query({

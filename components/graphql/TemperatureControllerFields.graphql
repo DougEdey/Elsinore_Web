@@ -1,0 +1,9 @@
+fragment TemperatureControllerFields on TemperatureController {
+  name
+  id
+  tempProbeDetails {
+    id
+    name
+    reading
+  }
+}

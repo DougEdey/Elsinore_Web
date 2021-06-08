@@ -1,0 +1,7 @@
+#import "./TemperatureControllerFields.graphql"
+
+query deviceList {
+  temperatureControllers {
+    ...TemperatureControllerFields
+  }
+}

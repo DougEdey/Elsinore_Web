@@ -13,6 +13,6 @@ export default function App ({ Component, pageProps }) {
 }
 
 App.propTypes = {
-  Component: PropTypes.element.isRequired,
+  Component: PropTypes.any,
   pageProps: PropTypes.any,
 }

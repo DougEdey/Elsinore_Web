@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client'
 import ErrorMessage from './ErrorMessage'
 import Device from './Device'
-import {deviceList} from './graphql/all_devices'
+import {deviceList} from './graphql/DeviceList.graphql'
 
 export default function DeviceList() {
   const { loading, error, data } = useQuery(

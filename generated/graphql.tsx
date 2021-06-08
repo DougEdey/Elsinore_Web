@@ -107,7 +107,6 @@ export type MutationRemoveProbeFromTemperatureControllerArgs = {
 
 
 export type MutationUpdateTemperatureControllerArgs = {
-  id: Scalars['ID'];
   controllerSettings: TemperatureControllerSettingsInput;
 };
 
@@ -226,6 +225,8 @@ export type TemperatureController = {
 
 /** Used to configure a controller */
 export type TemperatureControllerSettingsInput = {
+  /** The controller Id */
+  id: Scalars['ID'];
   /** The name of the controller. */
   name?: Maybe<Scalars['String']>;
   /** The new mode for the controller */
@@ -261,26 +262,50 @@ export type DeviceListQuery = (
   { __typename?: 'Query' }
   & { temperatureControllers?: Maybe<Array<Maybe<(
     { __typename?: 'TemperatureController' }
-    & Pick<TemperatureController, 'name'>
-    & { tempProbeDetails?: Maybe<Array<Maybe<(
-      { __typename?: 'TempProbeDetails' }
-      & Pick<TempProbeDetails, 'name' | 'reading'>
-    )>>> }
+    & TemperatureControllerFieldsFragment
   )>>> }
 );
 
+export type TemperatureControllerFieldsFragment = (
+  { __typename?: 'TemperatureController' }
+  & Pick<TemperatureController, 'name' | 'id'>
+  & { tempProbeDetails?: Maybe<Array<Maybe<(
+    { __typename?: 'TempProbeDetails' }
+    & Pick<TempProbeDetails, 'id' | 'name' | 'reading'>
+  )>>> }
+);
 
-export const DeviceListDocument = gql`
-    query deviceList {
-  temperatureControllers {
+export type UpdateTemperatureControllerMutationVariables = Exact<{
+  controllerSettings: TemperatureControllerSettingsInput;
+}>;
+
+
+export type UpdateTemperatureControllerMutation = (
+  { __typename?: 'Mutation' }
+  & { updateTemperatureController?: Maybe<(
+    { __typename?: 'TemperatureController' }
+    & TemperatureControllerFieldsFragment
+  )> }
+);
+
+export const TemperatureControllerFieldsFragmentDoc = gql`
+    fragment TemperatureControllerFields on TemperatureController {
+  name
+  id
+  tempProbeDetails {
+    id
     name
-    tempProbeDetails {
-      name
-      reading
-    }
+    reading
   }
 }
     `;
+export const DeviceListDocument = gql`
+    query deviceList {
+  temperatureControllers {
+    ...TemperatureControllerFields
+  }
+}
+    ${TemperatureControllerFieldsFragmentDoc}`;
 
 /**
  * __useDeviceListQuery__
@@ -308,3 +333,36 @@ export function useDeviceListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type DeviceListQueryHookResult = ReturnType<typeof useDeviceListQuery>;
 export type DeviceListLazyQueryHookResult = ReturnType<typeof useDeviceListLazyQuery>;
 export type DeviceListQueryResult = Apollo.QueryResult<DeviceListQuery, DeviceListQueryVariables>;
+export const UpdateTemperatureControllerDocument = gql`
+    mutation updateTemperatureController($controllerSettings: TemperatureControllerSettingsInput!) {
+  updateTemperatureController(controllerSettings: $controllerSettings) {
+    ...TemperatureControllerFields
+  }
+}
+    ${TemperatureControllerFieldsFragmentDoc}`;
+export type UpdateTemperatureControllerMutationFn = Apollo.MutationFunction<UpdateTemperatureControllerMutation, UpdateTemperatureControllerMutationVariables>;
+
+/**
+ * __useUpdateTemperatureControllerMutation__
+ *
+ * To run a mutation, you first call `useUpdateTemperatureControllerMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateTemperatureControllerMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateTemperatureControllerMutation, { data, loading, error }] = useUpdateTemperatureControllerMutation({
+ *   variables: {
+ *      controllerSettings: // value for 'controllerSettings'
+ *   },
+ * });
+ */
+export function useUpdateTemperatureControllerMutation(baseOptions?: Apollo.MutationHookOptions<UpdateTemperatureControllerMutation, UpdateTemperatureControllerMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateTemperatureControllerMutation, UpdateTemperatureControllerMutationVariables>(UpdateTemperatureControllerDocument, options);
+      }
+export type UpdateTemperatureControllerMutationHookResult = ReturnType<typeof useUpdateTemperatureControllerMutation>;
+export type UpdateTemperatureControllerMutationResult = Apollo.MutationResult<UpdateTemperatureControllerMutation>;
+export type UpdateTemperatureControllerMutationOptions = Apollo.BaseMutationOptions<UpdateTemperatureControllerMutation, UpdateTemperatureControllerMutationVariables>;

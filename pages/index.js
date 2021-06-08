@@ -1,8 +1,7 @@
 import App from '../components/App'
 import Header from '../components/Header'
-import DeviceList, {
-  ALL_DEVICES_QUERY,
-} from '../components/DeviceList'
+import DeviceList from '../components/DeviceList'
+
 import { initializeApollo, addApolloState } from '../lib/apolloClient'
 
 const IndexPage = () => (
@@ -15,9 +14,9 @@ const IndexPage = () => (
 export async function getStaticProps () {
   const apolloClient = initializeApollo()
 
-  await apolloClient.query({
-    query: ALL_DEVICES_QUERY,
-  })
+  // await apolloClient.query({
+  //   query: deviceList,
+  // })
 
   return addApolloState(apolloClient, {
     props: {},

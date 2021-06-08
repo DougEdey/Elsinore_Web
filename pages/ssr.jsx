@@ -1,9 +1,6 @@
 import App from '../components/App';
 import Header from '../components/Header';
-import DeviceList, {
-  ALL_DEVICES_QUERY,
-} from '../components/DeviceList';
-import { initializeApollo, addApolloState } from '../lib/apolloClient';
+import DeviceList from '../components/DeviceList';
 
 const SSRPage = () => (
   <App>
@@ -12,16 +9,16 @@ const SSRPage = () => (
   </App>
 )
 
-export async function getServerSideProps() {
-  const apolloClient = initializeApollo()
+// export async function getServerSideProps() {
+//   const apolloClient = initializeApollo()
 
-  await apolloClient.query({
-    query: ALL_DEVICES_QUERY,
-  })
+//   await apolloClient.query({
+//     query: deviceList,
+//   })
 
-  return addApolloState(apolloClient, {
-    props: {},
-  })
-}
+//   return addApolloState(apolloClient, {
+//     props: {},
+//   })
+// }
 
 export default SSRPage

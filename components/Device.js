@@ -37,42 +37,50 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "right",
   },
   expand: {
-    transform: "rotate(0deg)",
-    marginLeft: "auto",
-    transition: theme.transitions.create("transform", {
-      duration: theme.transitions.duration.shortest,
-    }),
+    marginLeft: 'auto',
   },
-  expandOpen: {
-    transform: "rotate(180deg)",
+  rootForm: {
+    '& > *': {
+      margin: theme.spacing(1),
+      width: '95%',
+    },
   },
 }));
 
 export default function Device({ temperatureController }) {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
-  const multipleProbes = temperatureController.tempProbeDetails.length > 1;
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
+  const [expandedHeat, setExpandedHeat] = React.useState(false);
+  const multipleProbes = temperatureController.tempProbeDetails.length > 1
+  const handleExpandClick = (pane) => {
+    if (pane === 'general') {
+      setExpanded(!expanded);
+      setExpandedHeat(false);
+    } else if (pane === 'heat') {
+      setExpandedHeat(!expandedHeat);
+      setExpanded(false);
+    }
   };
+
   const [temperatureControllerSettings] = React.useState({
     id: temperatureController.id,
     name: temperatureController.name,
   });
 
-  const [updateController] = useMutation(UpdateTemperatureController);
-  const { register, handleSubmit, setValue } = useForm({ mode: "onBlur" });
-  const handleFormSubmit = (data) => {
-    updateController({ variables: { controllerSettings: data } });
-  };
+  const id = useField(temperatureControllerSettings?.id, [temperatureControllerSettings.id])
+  const name = useField(temperatureControllerSettings?.name, [temperatureControllerSettings.name])
 
-  useEffect(() => {
-    if (!temperatureControllerSettings) {
-      return;
-    }
-    setValue("id", temperatureControllerSettings.id);
-    setValue("name", temperatureControllerSettings.name);
-  }, [temperatureControllerSettings, setValue]);
+  const fields = {id, name}
+  
+  const [updateController] = useMutation(UpdateTemperatureController)
+  
+  const {submit} = useSubmit(
+    async fieldValues => {
+      updateController({variables: {controllerSettings: getValues(fieldValues)}}) 
+      return { status: 'success'} ;
+    },
+    fields,
+  );
 
   return (
     <Card
@@ -102,29 +110,54 @@ export default function Device({ temperatureController }) {
       </CardContent>
       <CardActions disableSpacing>
         <IconButton
-          className={clsx(classes.expand, {
-            [classes.expandOpen]: expanded,
-          })}
-          onClick={handleExpandClick}
+          className={clsx(classes.expand)}
+          onClick={() => handleExpandClick('general')}
           aria-expanded={expanded}
           aria-label="show more"
         >
-          <ExpandMoreIcon />
+          <SettingsIcon color={expanded ? "primary" : "secondary"} />
+        </IconButton>
+        <IconButton
+          className={clsx(classes.expand)}
+          onClick={() => handleExpandClick('heat')}
+          aria-expanded={expandedHeat}
+          aria-label="show more"
+        >
+          <WhatshotIcon color={expandedHeat ? "primary" : "secondary"} />
         </IconButton>
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-          <form onSubmit={handleSubmit(handleFormSubmit)}>
-            <input {...register("id")} type="hidden" />
-            <input
-              {...register("name", {
-                pattern: {
-                  value: /[A-Za-z0-9]+/,
-                  message: "Bad name",
-                },
-              })}
-            />
-            <Button type="submit" value="submit" />
+          <form onSubmit={submit} className={classes.rootForm}>
+            
+            <Input {...fields.id } type="hidden" />
+            <FormControl>
+              <InputLabel htmlFor="id">Name</InputLabel>
+              <Input {...fields.name} />
+            </FormControl>
+            <FormControl>
+              <Button type="submit" value="submit">
+                Save
+              </Button>
+            </FormControl>
+          </form>
+        </CardContent>
+      </Collapse>
+      <Collapse in={expandedHeat} timeout="auto" unmountOnExit>
+        <CardContent>
+
+          <form onSubmit={submit} className={classes.rootForm}>
+            
+            <Input {...fields.id } type="hidden" />
+            <FormControl>
+              <InputLabel htmlFor="id">Name</InputLabel>
+              <Input {...fields.name} />
+            </FormControl>
+            <FormControl>
+              <Button type="submit" value="submit">
+                Save
+              </Button>
+            </FormControl>
           </form>
         </CardContent>
       </Collapse>

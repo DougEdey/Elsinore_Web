@@ -1,15 +1,16 @@
-import React from "react";
-import { useQuery } from "@apollo/client";
-
-import ErrorMessage from "./ErrorMessage";
-import Device from "./Device";
-import DeviceListQuery from "./graphql/DeviceList.graphql";
+import { useQuery } from '@apollo/client'
+import ErrorMessage from './ErrorMessage'
+import Device from './Device'
+import DeviceListQuery from './graphql/DeviceListQuery.graphql'
 
 export default function DeviceList() {
-  const { loading, error, data } = useQuery(DeviceListQuery, {
-    notifyOnNetworkStatusChange: true,
-    pollInterval: 5000,
-  });
+  const { loading, error, data } = useQuery(
+    DeviceListQuery,
+    {
+      notifyOnNetworkStatusChange: true,
+      pollInterval: 5000,
+    },
+  )
 
   if (error) {
     return <ErrorMessage message="Error loading devices." />;

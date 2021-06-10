@@ -37,6 +37,7 @@
     "@shopify/eslint-plugin": "^40.2.3",
     "babel-plugin-graphql-tag": "^3.3.0",
     "babel-plugin-import-graphql": "^2.8.1",
-    "eslint": "^7.28.0"
+    "eslint": "^7.28.0",
+    "prettier": "^2.3.1"
   }
 }

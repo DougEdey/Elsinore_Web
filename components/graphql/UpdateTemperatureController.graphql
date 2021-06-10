@@ -1,6 +1,6 @@
 #import "./TemperatureControllerFields.graphql"
 
-mutation updateTemperatureController($controllerSettings: TemperatureControllerSettingsInput!) {
+mutation UpdateTemperatureController($controllerSettings: TemperatureControllerSettingsInput!) {
   updateTemperatureController(controllerSettings: $controllerSettings) {
   	...TemperatureControllerFields
   }

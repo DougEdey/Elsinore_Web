@@ -1,7 +1,3 @@
 {
-  "presets": ["next/babel"],
-  "plugins": [
-    "graphql-tag",
-    "import-graphql"
-  ]
+  "presets": ["next/babel"]
 }

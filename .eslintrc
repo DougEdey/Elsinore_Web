@@ -1,35 +1,8 @@
-{
-    "settings": {
-        "react": {
-            "version": "detect"
-        }
-    },
-    "env": {
-        "browser": true,
-        "es2021": true,
-        "node": true
-    },
-    "extends": [
-        "plugin:react/recommended",
-        "eslint:recommended"
-    ],
-    "parser": "@typescript-eslint/parser",
-    "parserOptions": {
-        "ecmaFeatures": {
-            "jsx": true
-        },
-        "ecmaVersion": 12,
-        "sourceType": "module"
-    },
-    "rules": {
-        "react/react-in-jsx-scope": "off",
-        "comma-dangle": ["error", "always-multiline"]
-    },
-    "plugins": [
-        "react",
-        "@typescript-eslint"
-    ],
-    "globals": {
-        "React": "writable"
-    }
+{ 
+  "extends": [
+    "plugin:@shopify/esnext",
+    "plugin:@shopify/react",
+    "plugin:@shopify/node",
+    "plugin:@shopify/prettier"
+  ]
 }

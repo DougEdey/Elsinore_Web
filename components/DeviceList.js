@@ -1,27 +1,27 @@
-import { useQuery } from '@apollo/client'
-import ErrorMessage from './ErrorMessage'
-import Device from './Device'
-import {deviceList} from './graphql/DeviceList.graphql'
+import React from "react";
+import { useQuery } from "@apollo/client";
+
+import ErrorMessage from "./ErrorMessage";
+import Device from "./Device";
+import DeviceListQuery from "./graphql/DeviceList.graphql";
 
 export default function DeviceList() {
-  const { loading, error, data } = useQuery(
-    deviceList,
-    {
-      notifyOnNetworkStatusChange: true,
-      pollInterval: 5000,
-    },
-  )
+  const { loading, error, data } = useQuery(DeviceListQuery, {
+    notifyOnNetworkStatusChange: true,
+    pollInterval: 5000,
+  });
 
   if (error) {
-    return <ErrorMessage message="Error loading devices." />
+    return <ErrorMessage message="Error loading devices." />;
   }
-  if (loading && !data) return <div>Loading</div>
+  if (loading && !data) return <div />;
 
-  const allControllers = data.temperatureControllers
+  const allControllers = data.temperatureControllers;
 
-  return (
-    allControllers.map(temperatureController => (
-      <Device temperatureController={temperatureController} key={temperatureController.name} />
-    ))
-  )
+  return allControllers.map((temperatureController) => (
+    <Device
+      temperatureController={temperatureController}
+      key={temperatureController.name}
+    />
+  ));
 }

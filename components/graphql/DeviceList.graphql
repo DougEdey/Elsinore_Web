@@ -1,6 +1,6 @@
-#import "./TemperatureControllerFields.graphql"
+#import './TemperatureControllerFields.graphql';
 
-query deviceList {
+query DeviceListQuery {
   temperatureControllers {
     ...TemperatureControllerFields
   }

@@ -4,5 +4,8 @@
     "plugin:@shopify/react",
     "plugin:@shopify/node",
     "plugin:@shopify/prettier"
-  ]
+  ],
+  "rules": {
+    "@shopify/jsx-no-hardcoded-content": "warn"
+  }
 }

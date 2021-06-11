@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import {
   Button,
@@ -6,14 +6,18 @@ import {
   CardActions,
   CardContent,
   Collapse,
+  FormControl,
+  Input,
+  InputLabel,
   IconButton,
   Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import SettingsIcon from "@material-ui/icons/Settings";
+import WhatshotIcon from "@material-ui/icons/Whatshot";
+import { useField, useSubmit, getValues } from "@shopify/react-form";
 import clsx from "clsx";
 import { useMutation } from "@apollo/client";
-import { useForm } from "react-hook-form";
 
 import UpdateTemperatureController from "./graphql/UpdateTemperatureController.graphql";
 
@@ -37,12 +41,12 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "right",
   },
   expand: {
-    marginLeft: 'auto',
+    marginLeft: "auto",
   },
   rootForm: {
-    '& > *': {
+    "& > *": {
       margin: theme.spacing(1),
-      width: '95%',
+      width: "95%",
     },
   },
 }));
@@ -51,12 +55,12 @@ export default function Device({ temperatureController }) {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
   const [expandedHeat, setExpandedHeat] = React.useState(false);
-  const multipleProbes = temperatureController.tempProbeDetails.length > 1
+  const multipleProbes = temperatureController.tempProbeDetails.length > 1;
   const handleExpandClick = (pane) => {
-    if (pane === 'general') {
+    if (pane === "general") {
       setExpanded(!expanded);
       setExpandedHeat(false);
-    } else if (pane === 'heat') {
+    } else if (pane === "heat") {
       setExpandedHeat(!expandedHeat);
       setExpanded(false);
     }
@@ -67,20 +71,26 @@ export default function Device({ temperatureController }) {
     name: temperatureController.name,
   });
 
-  const id = useField(temperatureControllerSettings?.id, [temperatureControllerSettings.id])
-  const name = useField(temperatureControllerSettings?.name, [temperatureControllerSettings.name])
+  const id = useField(temperatureControllerSettings?.id, [
+    temperatureControllerSettings.id,
+  ]);
+  const name = useField(temperatureControllerSettings?.name, [
+    temperatureControllerSettings.name,
+  ]);
 
-  const fields = {id, name}
-  
-  const [updateController] = useMutation(UpdateTemperatureController)
-  
-  const {submit} = useSubmit(
-    async fieldValues => {
-      updateController({variables: {controllerSettings: getValues(fieldValues)}}) 
-      return { status: 'success'} ;
-    },
-    fields,
-  );
+  const fields = { id, name };
+
+  const [updateController] = useMutation(UpdateTemperatureController);
+
+  const { submit } = useSubmit(async (fieldValues) => {
+    await updateController({
+      variables: { controllerSettings: getValues(fieldValues) },
+    });
+    return { status: "success" };
+  }, fields);
+
+  const settingsButtonColor = expanded ? "primary" : "secondary";
+  const heatButtonColor = expandedHeat ? "primary" : "secondary";
 
   return (
     <Card
@@ -111,26 +121,25 @@ export default function Device({ temperatureController }) {
       <CardActions disableSpacing>
         <IconButton
           className={clsx(classes.expand)}
-          onClick={() => handleExpandClick('general')}
+          onClick={() => handleExpandClick("general")}
           aria-expanded={expanded}
           aria-label="show more"
         >
-          <SettingsIcon color={expanded ? "primary" : "secondary"} />
+          <SettingsIcon color={settingsButtonColor} />
         </IconButton>
         <IconButton
           className={clsx(classes.expand)}
-          onClick={() => handleExpandClick('heat')}
+          onClick={() => handleExpandClick("heat")}
           aria-expanded={expandedHeat}
           aria-label="show more"
         >
-          <WhatshotIcon color={expandedHeat ? "primary" : "secondary"} />
+          <WhatshotIcon color={heatButtonColor} />
         </IconButton>
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
           <form onSubmit={submit} className={classes.rootForm}>
-            
-            <Input {...fields.id } type="hidden" />
+            <Input {...fields.id} type="hidden" />
             <FormControl>
               <InputLabel htmlFor="id">Name</InputLabel>
               <Input {...fields.name} />
@@ -145,10 +154,8 @@ export default function Device({ temperatureController }) {
       </Collapse>
       <Collapse in={expandedHeat} timeout="auto" unmountOnExit>
         <CardContent>
-
           <form onSubmit={submit} className={classes.rootForm}>
-            
-            <Input {...fields.id } type="hidden" />
+            <Input {...fields.id} type="hidden" />
             <FormControl>
               <InputLabel htmlFor="id">Name</InputLabel>
               <Input {...fields.name} />

@@ -7,4 +7,10 @@ fragment TemperatureControllerFields on TemperatureController {
     reading
     physAddr
   }
+  heatSettings {
+    gpio
+  }
+  coolSettings {
+    gpio
+  }
 }

@@ -2,3 +2,4 @@ node_modules
 **/schema.graphql
 **/*.graphql.d.ts
 **/*.graphql
+generated/*

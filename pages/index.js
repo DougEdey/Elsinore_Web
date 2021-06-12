@@ -1,18 +1,10 @@
 import React from "react";
 import { gql } from "@apollo/client";
 
-import App from "../components/App";
-import Header from "../components/Header";
-import DeviceList from "../components/DeviceList";
-// import { DeviceListQuery } from "./components/graphql/DeviceList";
 import { initializeApollo, addApolloState } from "../lib/apolloClient";
+import MainLayout from "../components/MainLayout";
 
-const IndexPage = () => (
-  <App>
-    <Header />
-    <DeviceList />
-  </App>
-);
+const IndexPage = () => <MainLayout />;
 
 export async function getStaticProps() {
   const apolloClient = initializeApollo();

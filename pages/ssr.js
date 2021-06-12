@@ -1,15 +1,8 @@
 import React from "react";
 
-import App from "../components/App";
-import Header from "../components/Header";
-import DeviceList from "../components/DeviceList";
+import MainLayout from "../components/MainLayout";
 
-const SSRPage = () => (
-  <App>
-    <Header />
-    <DeviceList />
-  </App>
-);
+const SSRPage = () => <MainLayout />;
 
 // export async function getServerSideProps() {
 //   const apolloClient = initializeApollo()

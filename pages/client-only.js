@@ -5,5 +5,3 @@ import MainLayout from "../components/MainLayout";
 export default function ClientOnlyPage() {
   return <MainLayout />;
 }
-
-// export default ClientOnlyPage;

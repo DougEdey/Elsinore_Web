@@ -1,43 +1,31 @@
-import React, { useEffect } from "react";
+import React from "react";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
-import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
 import { makeStyles } from "@material-ui/core/styles";
 
-import { useCurrentTheme } from "../utilities/themes";
+import ThemeToggle from "./ThemeToggle";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
+  appBar: {
+    zIndex: theme.zIndex.drawer + 1,
   },
   title: {
     flexGrow: 1,
+    alignSelf: "flex-end",
   },
 }));
 
 export default function Header() {
-  const [theme, toggleTheme] = useCurrentTheme();
   const classes = useStyles();
   return (
-    <div className={classes.root}>
-      <AppBar position="static">
-        <Toolbar>
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            onClick={() => toggleTheme()}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography vairant="h6">Elsinore</Typography>
-        </Toolbar>
-      </AppBar>
-    </div>
+    <AppBar position="fixed" className={classes.appBar}>
+      <Toolbar>
+        <Typography vairant="h6" className={classes.title}>
+          Elsinore
+        </Typography>
+        <ThemeToggle />
+      </Toolbar>
+    </AppBar>
   );
 }

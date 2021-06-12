@@ -1,22 +1,25 @@
-import React, { useEffect } from "react";
-import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
-
-import { useCurrentTheme } from "../utilities/themes";
+import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import Toolbar from "@material-ui/core/Toolbar";
 
 import App from "./App";
 import Header from "./Header";
-import DeviceList from "./DeviceList";
+import Container from "./Container";
+
+const useStyles = makeStyles((theme) => ({
+  content: {
+    flexGrow: 1,
+    padding: theme.spacing(3),
+  },
+}));
 
 export default function MainLayout() {
-  const [theme] = useCurrentTheme();
-  
-  const themeConfig = createMuiTheme(theme);
+  const classes = useStyles();
   return (
-    <MuiThemeProvider theme={themeConfig}>
-      <App>
-        <Header/>
-        <DeviceList />
-      </App>
-    </MuiThemeProvider>
+    <App>
+      <Header />
+      <Toolbar />
+      <Container className={classes.content} />
+    </App>
   );
 }

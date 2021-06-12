@@ -76,7 +76,9 @@ export default function Device({ temperatureController }) {
     }
   };
 
-  const [temperatureControllerSettings] = React.useState(Object.assign({}, temperatureController));
+  const [temperatureControllerSettings] = React.useState({
+    ...temperatureController,
+  });
 
   const id = useField(temperatureControllerSettings?.id, [
     temperatureControllerSettings.id,
@@ -85,16 +87,20 @@ export default function Device({ temperatureController }) {
     temperatureControllerSettings.name,
   ]);
 
-
-  const fields = { id, name, heatSettings: {
-    gpio: useField(temperatureControllerSettings?.heatSettings?.gpio, [
-      temperatureControllerSettings.heatSettings.gpio,
-    ])
-  }, coolSettings: {
-    gpio: useField(temperatureControllerSettings?.coolSettings?.gpio, [
-      temperatureControllerSettings.coolSettings.gpio,
-    ])
-  } };
+  const fields = {
+    id,
+    name,
+    heatSettings: {
+      gpio: useField(temperatureControllerSettings?.heatSettings?.gpio, [
+        temperatureControllerSettings.heatSettings.gpio,
+      ]),
+    },
+    coolSettings: {
+      gpio: useField(temperatureControllerSettings?.coolSettings?.gpio, [
+        temperatureControllerSettings.coolSettings.gpio,
+      ]),
+    },
+  };
 
   const [updateController] = useMutation(UpdateTemperatureController);
 

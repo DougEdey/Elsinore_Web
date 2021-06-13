@@ -17,6 +17,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import SettingsIcon from "@material-ui/icons/Settings";
 import WhatshotIcon from "@material-ui/icons/Whatshot";
 import AcUnitIcon from "@material-ui/icons/AcUnit";
+import SkipNextIcon from "@material-ui/icons/SkipNext";
 import { useList, useSubmit, getValues } from "@shopify/react-form";
 import clsx from "clsx";
 import { useMutation } from "@apollo/client";
@@ -60,6 +61,7 @@ export default function Device({ temperatureController }) {
   const [expanded, setExpanded] = useState(false);
   const [expandedHeat, setExpandedHeat] = useState(false);
   const [expandedCool, setExpandedCool] = useState(false);
+  const [expandedManual, setExpandedManual] = useState(false);
   const multipleProbes = temperatureController.tempProbeDetails.length > 1;
 
   const handleExpandClick = (pane) => {
@@ -67,14 +69,22 @@ export default function Device({ temperatureController }) {
       setExpanded(!expanded);
       setExpandedHeat(false);
       setExpandedCool(false);
+      setExpandedManual(false);
     } else if (pane === "heat") {
       setExpandedHeat(!expandedHeat);
       setExpanded(false);
       setExpandedCool(false);
+      setExpandedManual(false);
     } else if (pane === "cool") {
       setExpandedCool(!expandedCool);
       setExpanded(false);
       setExpandedHeat(false);
+      setExpandedManual(false);
+    } else if (pane === "manual") {
+      setExpandedManual(!expandedManual);
+      setExpanded(false);
+      setExpandedHeat(false);
+      setExpandedCool(false);
     }
   };
 
@@ -113,9 +123,10 @@ export default function Device({ temperatureController }) {
     return { status: "success" };
   }, fields);
 
-  const settingsButtonColor = expanded ? "primary" : "disabled";
-  const heatButtonColor = expandedHeat ? "primary" : "disabled";
-  const coolButtonColor = expandedCool ? "primary" : "disabled";
+  const settingsButtonColor = expanded ? "primary" : "";
+  const heatButtonColor = expandedHeat ? "primary" : "";
+  const coolButtonColor = expandedCool ? "primary" : "";
+  const manualButtonColor = expandedManual ? "primary" : "";
 
   const currentState = () => {
     console.log(temperatureController.mode);
@@ -127,7 +138,9 @@ export default function Device({ temperatureController }) {
       );
     } else if (temperatureController.mode === "manual") {
       return (
-        <CircularProgressWithLabel value={temperatureController.dutyCycle} />
+        <CircularProgressWithLabel
+          value={temperatureController.manualSettings.dutyCycle}
+        />
       );
     } else if (temperatureController.mode === "off") {
       return <Typography component="h2">Off</Typography>;
@@ -185,6 +198,14 @@ export default function Device({ temperatureController }) {
           aria-label="show more"
         >
           <AcUnitIcon color={coolButtonColor} />
+        </IconButton>
+        <IconButton
+          className={clsx(classes.expand)}
+          onClick={() => handleExpandClick("manual")}
+          aria-expanded={expandedManual}
+          aria-label="show more"
+        >
+          <SkipNextIcon color={manualButtonColor} />
         </IconButton>
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
@@ -276,6 +297,25 @@ export default function Device({ temperatureController }) {
             <FormControl>
               <InputLabel htmlFor="derivative">Derivative (D)</InputLabel>
               <Input {...fields.coolSettings.derivative} />
+            </FormControl>
+            <FormControl>
+              <Button type="submit" value="submit">
+                Save
+              </Button>
+            </FormControl>
+          </form>
+        </CardContent>
+      </Collapse>
+      <Collapse in={expandedManual} timeout="auto" unmountOnExit>
+        <CardContent>
+          <form onSubmit={submit} className={classes.rootForm}>
+            <FormControl>
+              <InputLabel htmlFor="name">Duty Cycle</InputLabel>
+              <Input {...fields.manualSettings.dutyCycle} />
+            </FormControl>
+            <FormControl>
+              <InputLabel htmlFor="setPoint">Cycle Time</InputLabel>
+              <Input {...fields.manualSettings.cycleTime} />
             </FormControl>
             <FormControl>
               <Button type="submit" value="submit">

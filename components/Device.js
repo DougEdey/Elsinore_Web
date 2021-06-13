@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Button,
   Card,
   CardActions,
@@ -18,12 +23,14 @@ import SettingsIcon from "@material-ui/icons/Settings";
 import WhatshotIcon from "@material-ui/icons/Whatshot";
 import AcUnitIcon from "@material-ui/icons/AcUnit";
 import SkipNextIcon from "@material-ui/icons/SkipNext";
+import DeleteIcon from "@material-ui/icons/Delete";
 import { useList, useSubmit, getValues } from "@shopify/react-form";
 import clsx from "clsx";
 import { useMutation } from "@apollo/client";
 
 import CircularProgressWithLabel from "./CircularProgressWithLabel";
 import UpdateTemperatureController from "./graphql/UpdateTemperatureController.graphql";
+import DeleteTemperatureController from "./graphql/DeleteTemperatureController.graphql";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -62,6 +69,7 @@ export default function Device({ temperatureController }) {
   const [expandedHeat, setExpandedHeat] = useState(false);
   const [expandedCool, setExpandedCool] = useState(false);
   const [expandedManual, setExpandedManual] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
   const multipleProbes = temperatureController.tempProbeDetails.length > 1;
 
   const handleExpandClick = (pane) => {
@@ -148,191 +156,255 @@ export default function Device({ temperatureController }) {
   };
 
   return (
-    <Card
-      className={classes.root}
-      key={temperatureController.id}
-      variant="outlined"
-    >
-      <CardContent>
-        <Typography colour="textSecondary" gutterBottom>
-          {temperatureController.name}
-        </Typography>
-        {temperatureController.tempProbeDetails.map((probe) => {
-          let probeDescription = probe.reading;
-          if (multipleProbes) {
-            probeDescription = `${probe.name} - ${probe.reading}`;
-          }
-          return (
-            <Typography
-              key={probe.physAddr}
-              className={classes.probe}
-              component="h2"
-            >
-              {probeDescription}
-            </Typography>
-          );
-        })}
-        {currentState()}
-      </CardContent>
-      <CardActions disableSpacing>
-        <IconButton
-          className={clsx(classes.expand)}
-          onClick={() => handleExpandClick("general")}
-          aria-expanded={expanded}
-          aria-label="show more"
-        >
-          <SettingsIcon color={settingsButtonColor} />
-        </IconButton>
-        <IconButton
-          className={clsx(classes.expand)}
-          onClick={() => handleExpandClick("heat")}
-          aria-expanded={expandedHeat}
-          aria-label="show more"
-        >
-          <WhatshotIcon color={heatButtonColor} />
-        </IconButton>
-        <IconButton
-          className={clsx(classes.expand)}
-          onClick={() => handleExpandClick("cool")}
-          aria-expanded={expandedCool}
-          aria-label="show more"
-        >
-          <AcUnitIcon color={coolButtonColor} />
-        </IconButton>
-        <IconButton
-          className={clsx(classes.expand)}
-          onClick={() => handleExpandClick("manual")}
-          aria-expanded={expandedManual}
-          aria-label="show more"
-        >
-          <SkipNextIcon color={manualButtonColor} />
-        </IconButton>
-      </CardActions>
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
+    <>
+      <Card
+        className={classes.root}
+        key={temperatureController.id}
+        variant="outlined"
+      >
         <CardContent>
-          <form onSubmit={submit} className={classes.rootForm}>
-            <FormControl>
-              <InputLabel htmlFor="name">Name</InputLabel>
-              <Input {...fields.name} />
-            </FormControl>
-            <FormControl>
-              <InputLabel htmlFor="mode">Mode</InputLabel>
-              <Select {...fields.mode}>
-                <option aria-label="Off" value="off">
-                  Off
-                </option>
-                <option aria-label="Auto" value="auto">
-                  Auto
-                </option>
-                <option aria-label="Manual" value="manual">
-                  Manual
-                </option>
-                <option aria-label="Hysteria" value="hysteria">
-                  Hysteria
-                </option>
-              </Select>
-            </FormControl>
-            <FormControl>
-              <InputLabel htmlFor="setPoint">Set Point</InputLabel>
-              <Input {...fields.setPoint} />
-            </FormControl>
-            <FormControl>
-              <Button type="submit" value="submit">
-                Save
-              </Button>
-            </FormControl>
-          </form>
+          <Typography colour="textSecondary" gutterBottom>
+            {temperatureController.name}
+          </Typography>
+          {temperatureController.tempProbeDetails.map((probe) => {
+            let probeDescription = probe.reading;
+            if (multipleProbes) {
+              probeDescription = `${probe.name} - ${probe.reading}`;
+            }
+            return (
+              <Typography
+                key={probe.physAddr}
+                className={classes.probe}
+                component="h2"
+              >
+                {probeDescription}
+              </Typography>
+            );
+          })}
+          {currentState()}
         </CardContent>
-      </Collapse>
-      <Collapse in={expandedHeat} timeout="auto" unmountOnExit>
-        <CardContent>
-          <form onSubmit={submit} className={classes.rootForm}>
-            <FormControl>
-              <InputLabel htmlFor="heatSettings.gpio">GPIO</InputLabel>
-              <Input {...fields.heatSettings.gpio} />
-            </FormControl>
-            <FormControl>
-              <InputLabel htmlFor="dutyCycle">Cycle Time</InputLabel>
-              <Input {...fields.heatSettings.cycleTime} />
-            </FormControl>
-            <FormControl>
-              <InputLabel htmlFor="proportional">Proportional (P)</InputLabel>
-              <Input {...fields.heatSettings.proportional} />
-            </FormControl>
-            <FormControl>
-              <InputLabel htmlFor="integral">Integral (I)</InputLabel>
-              <Input {...fields.heatSettings.integral} />
-            </FormControl>
-            <FormControl>
-              <InputLabel htmlFor="derivative">Derivative (D)</InputLabel>
-              <Input {...fields.heatSettings.derivative} />
-            </FormControl>
-            <FormControl>
-              <Button type="submit" value="submit">
-                Save
-              </Button>
-            </FormControl>
-          </form>
-        </CardContent>
-      </Collapse>
-      <Collapse in={expandedCool} timeout="auto" unmountOnExit>
-        <CardContent>
-          <form onSubmit={submit} className={classes.rootForm}>
-            <FormControl>
-              <InputLabel htmlFor="coolSettings.gpio">GPIO</InputLabel>
-              <Input {...fields.coolSettings.gpio} />
-            </FormControl>
-            <FormControl>
-              <InputLabel htmlFor="dutyCycle">Cycle Time</InputLabel>
-              <Input {...fields.coolSettings.cycleTime} />
-            </FormControl>
-            <FormControl>
-              <InputLabel htmlFor="proportional">Proportional (P)</InputLabel>
-              <Input {...fields.coolSettings.proportional} />
-            </FormControl>
-            <FormControl>
-              <InputLabel htmlFor="integral">Integral (I)</InputLabel>
-              <Input {...fields.coolSettings.integral} />
-            </FormControl>
-            <FormControl>
-              <InputLabel htmlFor="derivative">Derivative (D)</InputLabel>
-              <Input {...fields.coolSettings.derivative} />
-            </FormControl>
-            <FormControl>
-              <Button type="submit" value="submit">
-                Save
-              </Button>
-            </FormControl>
-          </form>
-        </CardContent>
-      </Collapse>
-      <Collapse in={expandedManual} timeout="auto" unmountOnExit>
-        <CardContent>
-          <form onSubmit={submit} className={classes.rootForm}>
-            <FormControl>
-              <InputLabel htmlFor="heatSettings.gpio">GPIO</InputLabel>
-              <Input {...fields.heatSettings.gpio} />
-            </FormControl>
-            <FormControl>
-              <InputLabel htmlFor="name">Duty Cycle</InputLabel>
-              <Input {...fields.manualSettings.dutyCycle} />
-            </FormControl>
-            <FormControl>
-              <InputLabel htmlFor="setPoint">Cycle Time</InputLabel>
-              <Input {...fields.manualSettings.cycleTime} />
-            </FormControl>
-            <FormControl>
-              <Button type="submit" value="submit">
-                Save
-              </Button>
-            </FormControl>
-          </form>
-        </CardContent>
-      </Collapse>
-    </Card>
+        <CardActions disableSpacing>
+          <IconButton
+            className={clsx(classes.expand)}
+            onClick={() => handleExpandClick("general")}
+            aria-expanded={expanded}
+            aria-label="show more"
+          >
+            <SettingsIcon color={settingsButtonColor} />
+          </IconButton>
+          <IconButton
+            className={clsx(classes.expand)}
+            onClick={() => handleExpandClick("heat")}
+            aria-expanded={expandedHeat}
+            aria-label="show more"
+          >
+            <WhatshotIcon color={heatButtonColor} />
+          </IconButton>
+          <IconButton
+            className={clsx(classes.expand)}
+            onClick={() => handleExpandClick("cool")}
+            aria-expanded={expandedCool}
+            aria-label="show more"
+          >
+            <AcUnitIcon color={coolButtonColor} />
+          </IconButton>
+          <IconButton
+            className={clsx(classes.expand)}
+            onClick={() => handleExpandClick("manual")}
+            aria-expanded={expandedManual}
+            aria-label="show more"
+          >
+            <SkipNextIcon color={manualButtonColor} />
+          </IconButton>
+          <IconButton
+            className={clsx(classes.expand)}
+            onClick={() => setDeleteOpen(true)}
+            aria-expanded={expandedManual}
+            aria-label="delete"
+          >
+            <DeleteIcon color="secondary" />
+          </IconButton>
+        </CardActions>
+        <Collapse in={expanded} timeout="auto" unmountOnExit>
+          <CardContent>
+            <form onSubmit={submit} className={classes.rootForm}>
+              <FormControl>
+                <InputLabel htmlFor="name">Name</InputLabel>
+                <Input {...fields.name} />
+              </FormControl>
+              <FormControl>
+                <InputLabel htmlFor="mode">Mode</InputLabel>
+                <Select {...fields.mode}>
+                  <option aria-label="Off" value="off">
+                    Off
+                  </option>
+                  <option aria-label="Auto" value="auto">
+                    Auto
+                  </option>
+                  <option aria-label="Manual" value="manual">
+                    Manual
+                  </option>
+                  <option aria-label="Hysteria" value="hysteria">
+                    Hysteria
+                  </option>
+                </Select>
+              </FormControl>
+              <FormControl>
+                <InputLabel htmlFor="setPoint">Set Point</InputLabel>
+                <Input {...fields.setPoint} />
+              </FormControl>
+              <FormControl>
+                <Button type="submit" value="submit">
+                  Save
+                </Button>
+              </FormControl>
+            </form>
+          </CardContent>
+        </Collapse>
+        <Collapse in={expandedHeat} timeout="auto" unmountOnExit>
+          <CardContent>
+            <form onSubmit={submit} className={classes.rootForm}>
+              <FormControl>
+                <InputLabel htmlFor="heatSettings.gpio">GPIO</InputLabel>
+                <Input {...fields.heatSettings.gpio} />
+              </FormControl>
+              <FormControl>
+                <InputLabel htmlFor="dutyCycle">Cycle Time</InputLabel>
+                <Input {...fields.heatSettings.cycleTime} />
+              </FormControl>
+              <FormControl>
+                <InputLabel htmlFor="proportional">Proportional (P)</InputLabel>
+                <Input {...fields.heatSettings.proportional} />
+              </FormControl>
+              <FormControl>
+                <InputLabel htmlFor="integral">Integral (I)</InputLabel>
+                <Input {...fields.heatSettings.integral} />
+              </FormControl>
+              <FormControl>
+                <InputLabel htmlFor="derivative">Derivative (D)</InputLabel>
+                <Input {...fields.heatSettings.derivative} />
+              </FormControl>
+              <FormControl>
+                <Button type="submit" value="submit">
+                  Save
+                </Button>
+              </FormControl>
+            </form>
+          </CardContent>
+        </Collapse>
+        <Collapse in={expandedCool} timeout="auto" unmountOnExit>
+          <CardContent>
+            <form onSubmit={submit} className={classes.rootForm}>
+              <FormControl>
+                <InputLabel htmlFor="coolSettings.gpio">GPIO</InputLabel>
+                <Input {...fields.coolSettings.gpio} />
+              </FormControl>
+              <FormControl>
+                <InputLabel htmlFor="dutyCycle">Cycle Time</InputLabel>
+                <Input {...fields.coolSettings.cycleTime} />
+              </FormControl>
+              <FormControl>
+                <InputLabel htmlFor="proportional">Proportional (P)</InputLabel>
+                <Input {...fields.coolSettings.proportional} />
+              </FormControl>
+              <FormControl>
+                <InputLabel htmlFor="integral">Integral (I)</InputLabel>
+                <Input {...fields.coolSettings.integral} />
+              </FormControl>
+              <FormControl>
+                <InputLabel htmlFor="derivative">Derivative (D)</InputLabel>
+                <Input {...fields.coolSettings.derivative} />
+              </FormControl>
+              <FormControl>
+                <Button type="submit" value="submit">
+                  Save
+                </Button>
+              </FormControl>
+            </form>
+          </CardContent>
+        </Collapse>
+        <Collapse in={expandedManual} timeout="auto" unmountOnExit>
+          <CardContent>
+            <form onSubmit={submit} className={classes.rootForm}>
+              <FormControl>
+                <InputLabel htmlFor="heatSettings.gpio">GPIO</InputLabel>
+                <Input {...fields.heatSettings.gpio} />
+              </FormControl>
+              <FormControl>
+                <InputLabel htmlFor="name">Duty Cycle</InputLabel>
+                <Input {...fields.manualSettings.dutyCycle} />
+              </FormControl>
+              <FormControl>
+                <InputLabel htmlFor="setPoint">Cycle Time</InputLabel>
+                <Input {...fields.manualSettings.cycleTime} />
+              </FormControl>
+              <FormControl>
+                <Button type="submit" value="submit">
+                  Save
+                </Button>
+              </FormControl>
+            </form>
+          </CardContent>
+        </Collapse>
+      </Card>
+      <DeleteProbeDialog
+        temperatureController={temperatureController}
+        open={deleteOpen}
+        setOpen={setDeleteOpen}
+      />
+    </>
   );
 }
 
 Device.propTypes = {
   temperatureController: PropTypes.object.isRequired,
+};
+
+function DeleteProbeDialog({ temperatureController, open, setOpen }) {
+  const [deleteController] = useMutation(DeleteTemperatureController);
+
+  const handleDelete = async () => {
+    await deleteController({
+      variables: { id: temperatureController.id },
+    });
+    setOpen(false);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  return (
+    <div>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="draggable-dialog-title"
+      >
+        <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
+          Delete {temperatureController.name}?
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete {temperatureController.name}? This
+            is not reversible!
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDelete} color="secondary">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  );
+}
+
+DeleteProbeDialog.propTypes = {
+  temperatureController: PropTypes.object.isRequired,
+  open: PropTypes.bool.isRequired,
+  setOpen: PropTypes.func.isRequired,
 };

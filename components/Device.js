@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import {
   Button,
@@ -21,6 +21,7 @@ import { useList, useSubmit, getValues } from "@shopify/react-form";
 import clsx from "clsx";
 import { useMutation } from "@apollo/client";
 
+import CircularProgressWithLabel from "./CircularProgressWithLabel";
 import UpdateTemperatureController from "./graphql/UpdateTemperatureController.graphql";
 
 const useStyles = makeStyles((theme) => ({
@@ -56,9 +57,9 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Device({ temperatureController }) {
   const classes = useStyles();
-  const [expanded, setExpanded] = React.useState(false);
-  const [expandedHeat, setExpandedHeat] = React.useState(false);
-  const [expandedCool, setExpandedCool] = React.useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const [expandedHeat, setExpandedHeat] = useState(false);
+  const [expandedCool, setExpandedCool] = useState(false);
   const multipleProbes = temperatureController.tempProbeDetails.length > 1;
 
   const handleExpandClick = (pane) => {
@@ -116,6 +117,23 @@ export default function Device({ temperatureController }) {
   const heatButtonColor = expandedHeat ? "primary" : "disabled";
   const coolButtonColor = expandedCool ? "primary" : "disabled";
 
+  const currentState = () => {
+    console.log(temperatureController.mode);
+    if (temperatureController.mode === "auto") {
+      return (
+        <CircularProgressWithLabel
+          value={temperatureController.calculatedDuty}
+        />
+      );
+    } else if (temperatureController.mode === "manual") {
+      return (
+        <CircularProgressWithLabel value={temperatureController.dutyCycle} />
+      );
+    } else if (temperatureController.mode === "off") {
+      return <Typography component="h2">Off</Typography>;
+    }
+  };
+
   return (
     <Card
       className={classes.root}
@@ -141,6 +159,7 @@ export default function Device({ temperatureController }) {
             </Typography>
           );
         })}
+        {currentState()}
       </CardContent>
       <CardActions disableSpacing>
         <IconButton

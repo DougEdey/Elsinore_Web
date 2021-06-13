@@ -310,6 +310,10 @@ export default function Device({ temperatureController }) {
         <CardContent>
           <form onSubmit={submit} className={classes.rootForm}>
             <FormControl>
+              <InputLabel htmlFor="heatSettings.gpio">GPIO</InputLabel>
+              <Input {...fields.heatSettings.gpio} />
+            </FormControl>
+            <FormControl>
               <InputLabel htmlFor="name">Duty Cycle</InputLabel>
               <Input {...fields.manualSettings.dutyCycle} />
             </FormControl>

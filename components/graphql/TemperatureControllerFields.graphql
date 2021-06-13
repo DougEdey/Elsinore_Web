@@ -1,6 +1,8 @@
 fragment TemperatureControllerFields on TemperatureController {
-  name
   id
+  name
+  setPoint
+  mode
   tempProbeDetails {
     id
     name

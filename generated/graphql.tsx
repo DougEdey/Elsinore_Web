@@ -255,7 +255,7 @@ export type TemperatureProbe = {
 
 export type TemperatureControllerFieldsFragment = (
   { __typename?: 'TemperatureController' }
-  & Pick<TemperatureController, 'name' | 'id'>
+  & Pick<TemperatureController, 'id' | 'name' | 'setPoint' | 'mode'>
   & { tempProbeDetails?: Maybe<Array<Maybe<(
     { __typename?: 'TempProbeDetails' }
     & Pick<TempProbeDetails, 'id' | 'name' | 'reading' | 'physAddr'>
@@ -270,8 +270,10 @@ export type TemperatureControllerFieldsFragment = (
 
 export const TemperatureControllerFieldsFragmentDoc = gql`
     fragment TemperatureControllerFields on TemperatureController {
-  name
   id
+  name
+  setPoint
+  mode
   tempProbeDetails {
     id
     name

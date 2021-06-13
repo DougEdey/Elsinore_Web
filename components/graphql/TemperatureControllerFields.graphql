@@ -1,6 +1,10 @@
 fragment TemperatureControllerFields on TemperatureController {
-  name
   id
+  name
+  setPoint
+  calculatedDuty
+  dutyCycle
+  mode
   tempProbeDetails {
     id
     name
@@ -8,9 +12,30 @@ fragment TemperatureControllerFields on TemperatureController {
     physAddr
   }
   heatSettings {
+    configured
     gpio
+    proportional
+    integral
+    derivative
+    cycleTime
   }
   coolSettings {
+    configured
     gpio
+    proportional
+    integral
+    derivative
+    cycleTime
+  }
+  manualSettings {
+    configured
+    dutyCycle
+    cycleTime
+  }
+  hysteriaSettings {
+    configured
+    minTime
+    minTemp
+    maxTemp
   }
 }

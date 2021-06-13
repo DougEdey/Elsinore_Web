@@ -255,23 +255,33 @@ export type TemperatureProbe = {
 
 export type TemperatureControllerFieldsFragment = (
   { __typename?: 'TemperatureController' }
-  & Pick<TemperatureController, 'name' | 'id'>
+  & Pick<TemperatureController, 'id' | 'name' | 'setPoint' | 'calculatedDuty' | 'dutyCycle' | 'mode'>
   & { tempProbeDetails?: Maybe<Array<Maybe<(
     { __typename?: 'TempProbeDetails' }
     & Pick<TempProbeDetails, 'id' | 'name' | 'reading' | 'physAddr'>
   )>>>, heatSettings?: Maybe<(
     { __typename?: 'PidSettings' }
-    & Pick<PidSettings, 'gpio'>
+    & Pick<PidSettings, 'configured' | 'gpio' | 'proportional' | 'integral' | 'derivative' | 'cycleTime'>
   )>, coolSettings?: Maybe<(
     { __typename?: 'PidSettings' }
-    & Pick<PidSettings, 'gpio'>
+    & Pick<PidSettings, 'configured' | 'gpio' | 'proportional' | 'integral' | 'derivative' | 'cycleTime'>
+  )>, manualSettings?: Maybe<(
+    { __typename?: 'ManualSettings' }
+    & Pick<ManualSettings, 'configured' | 'dutyCycle' | 'cycleTime'>
+  )>, hysteriaSettings?: Maybe<(
+    { __typename?: 'HysteriaSettings' }
+    & Pick<HysteriaSettings, 'configured' | 'minTime' | 'minTemp' | 'maxTemp'>
   )> }
 );
 
 export const TemperatureControllerFieldsFragmentDoc = gql`
     fragment TemperatureControllerFields on TemperatureController {
-  name
   id
+  name
+  setPoint
+  calculatedDuty
+  dutyCycle
+  mode
   tempProbeDetails {
     id
     name
@@ -279,10 +289,31 @@ export const TemperatureControllerFieldsFragmentDoc = gql`
     physAddr
   }
   heatSettings {
+    configured
     gpio
+    proportional
+    integral
+    derivative
+    cycleTime
   }
   coolSettings {
+    configured
     gpio
+    proportional
+    integral
+    derivative
+    cycleTime
+  }
+  manualSettings {
+    configured
+    dutyCycle
+    cycleTime
+  }
+  hysteriaSettings {
+    configured
+    minTime
+    minTemp
+    maxTemp
   }
 }
     `;

@@ -11,12 +11,13 @@ import {
   InputLabel,
   IconButton,
   Typography,
+  Select,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import SettingsIcon from "@material-ui/icons/Settings";
 import WhatshotIcon from "@material-ui/icons/Whatshot";
 import AcUnitIcon from "@material-ui/icons/AcUnit";
-import { useField, useSubmit, getValues } from "@shopify/react-form";
+import { useList, useSubmit, getValues } from "@shopify/react-form";
 import clsx from "clsx";
 import { useMutation } from "@apollo/client";
 
@@ -80,41 +81,40 @@ export default function Device({ temperatureController }) {
     ...temperatureController,
   });
 
-  const id = useField(temperatureControllerSettings?.id, [
-    temperatureControllerSettings.id,
-  ]);
-  const name = useField(temperatureControllerSettings?.name, [
-    temperatureControllerSettings.name,
-  ]);
-
-  const fields = {
-    id,
-    name,
-    heatSettings: {
-      gpio: useField(temperatureControllerSettings?.heatSettings?.gpio, [
-        temperatureControllerSettings.heatSettings.gpio,
-      ]),
-    },
-    coolSettings: {
-      gpio: useField(temperatureControllerSettings?.coolSettings?.gpio, [
-        temperatureControllerSettings.coolSettings.gpio,
-      ]),
-    },
-  };
+  const fields = useList([temperatureControllerSettings])[0];
+  fields.manualSettings = useList([
+    temperatureControllerSettings.manualSettings,
+  ])[0];
+  fields.coolSettings = useList([
+    temperatureControllerSettings.coolSettings,
+  ])[0];
+  fields.heatSettings = useList([
+    temperatureControllerSettings.heatSettings,
+  ])[0];
+  fields.hysteriaSettings = useList([
+    temperatureControllerSettings.hysteriaSettings,
+  ])[0];
+  delete fields.__typename;
+  delete fields.coolSettings.__typename;
+  delete fields.heatSettings.__typename;
+  delete fields.hysteriaSettings.__typename;
+  delete fields.manualSettings.__typename;
+  delete fields.tempProbeDetails;
+  delete fields.calculatedDuty;
+  delete fields.dutyCycle;
 
   const [updateController] = useMutation(UpdateTemperatureController);
 
   const { submit } = useSubmit(async (fieldValues) => {
-    console.log(getValues(fieldValues));
     await updateController({
       variables: { controllerSettings: getValues(fieldValues) },
     });
     return { status: "success" };
   }, fields);
 
-  const settingsButtonColor = expanded ? "primary" : "subdued";
-  const heatButtonColor = expandedHeat ? "primary" : "subdued";
-  const coolButtonColor = expandedCool ? "primary" : "subdued";
+  const settingsButtonColor = expanded ? "primary" : "disabled";
+  const heatButtonColor = expandedHeat ? "primary" : "disabled";
+  const coolButtonColor = expandedCool ? "primary" : "disabled";
 
   return (
     <Card
@@ -171,10 +171,30 @@ export default function Device({ temperatureController }) {
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
           <form onSubmit={submit} className={classes.rootForm}>
-            <Input {...fields.id} type="hidden" />
             <FormControl>
-              <InputLabel htmlFor="id">Name</InputLabel>
+              <InputLabel htmlFor="name">Name</InputLabel>
               <Input {...fields.name} />
+            </FormControl>
+            <FormControl>
+              <InputLabel htmlFor="mode">Mode</InputLabel>
+              <Select {...fields.mode}>
+                <option aria-label="Off" value="off">
+                  Off
+                </option>
+                <option aria-label="Auto" value="auto">
+                  Auto
+                </option>
+                <option aria-label="Manual" value="manual">
+                  Manual
+                </option>
+                <option aria-label="Hysteria" value="hysteria">
+                  Hysteria
+                </option>
+              </Select>
+            </FormControl>
+            <FormControl>
+              <InputLabel htmlFor="setPoint">Set Point</InputLabel>
+              <Input {...fields.setPoint} />
             </FormControl>
             <FormControl>
               <Button type="submit" value="submit">
@@ -188,8 +208,24 @@ export default function Device({ temperatureController }) {
         <CardContent>
           <form onSubmit={submit} className={classes.rootForm}>
             <FormControl>
-              <InputLabel htmlFor="id">GPIO</InputLabel>
+              <InputLabel htmlFor="heatSettings.gpio">GPIO</InputLabel>
               <Input {...fields.heatSettings.gpio} />
+            </FormControl>
+            <FormControl>
+              <InputLabel htmlFor="dutyCycle">Cycle Time</InputLabel>
+              <Input {...fields.heatSettings.cycleTime} />
+            </FormControl>
+            <FormControl>
+              <InputLabel htmlFor="proportional">Proportional (P)</InputLabel>
+              <Input {...fields.heatSettings.proportional} />
+            </FormControl>
+            <FormControl>
+              <InputLabel htmlFor="integral">Integral (I)</InputLabel>
+              <Input {...fields.heatSettings.integral} />
+            </FormControl>
+            <FormControl>
+              <InputLabel htmlFor="derivative">Derivative (D)</InputLabel>
+              <Input {...fields.heatSettings.derivative} />
             </FormControl>
             <FormControl>
               <Button type="submit" value="submit">
@@ -203,8 +239,24 @@ export default function Device({ temperatureController }) {
         <CardContent>
           <form onSubmit={submit} className={classes.rootForm}>
             <FormControl>
-              <InputLabel htmlFor="id">GPIO</InputLabel>
+              <InputLabel htmlFor="coolSettings.gpio">GPIO</InputLabel>
               <Input {...fields.coolSettings.gpio} />
+            </FormControl>
+            <FormControl>
+              <InputLabel htmlFor="dutyCycle">Cycle Time</InputLabel>
+              <Input {...fields.coolSettings.cycleTime} />
+            </FormControl>
+            <FormControl>
+              <InputLabel htmlFor="proportional">Proportional (P)</InputLabel>
+              <Input {...fields.coolSettings.proportional} />
+            </FormControl>
+            <FormControl>
+              <InputLabel htmlFor="integral">Integral (I)</InputLabel>
+              <Input {...fields.coolSettings.integral} />
+            </FormControl>
+            <FormControl>
+              <InputLabel htmlFor="derivative">Derivative (D)</InputLabel>
+              <Input {...fields.coolSettings.derivative} />
             </FormControl>
             <FormControl>
               <Button type="submit" value="submit">

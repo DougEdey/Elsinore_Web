@@ -1,8 +1,10 @@
 import { gql } from '@apollo/client';
+import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+const defaultOptions =  {}
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -253,67 +255,51 @@ export type TemperatureProbe = {
 };
 
 
-export type TemperatureControllerFieldsFragment = (
-  { __typename?: 'TemperatureController' }
-  & Pick<TemperatureController, 'id' | 'name' | 'setPoint' | 'calculatedDuty' | 'dutyCycle' | 'mode'>
-  & { tempProbeDetails?: Maybe<Array<Maybe<(
-    { __typename?: 'TempProbeDetails' }
-    & Pick<TempProbeDetails, 'id' | 'name' | 'reading' | 'physAddr'>
-  )>>>, heatSettings?: Maybe<(
-    { __typename?: 'PidSettings' }
-    & Pick<PidSettings, 'configured' | 'gpio' | 'proportional' | 'integral' | 'derivative' | 'cycleTime'>
-  )>, coolSettings?: Maybe<(
-    { __typename?: 'PidSettings' }
-    & Pick<PidSettings, 'configured' | 'gpio' | 'proportional' | 'integral' | 'derivative' | 'cycleTime'>
-  )>, manualSettings?: Maybe<(
-    { __typename?: 'ManualSettings' }
-    & Pick<ManualSettings, 'configured' | 'dutyCycle' | 'cycleTime'>
-  )>, hysteriaSettings?: Maybe<(
-    { __typename?: 'HysteriaSettings' }
-    & Pick<HysteriaSettings, 'configured' | 'minTime' | 'minTemp' | 'maxTemp'>
+export type DeleteTemperatureControllerMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type DeleteTemperatureControllerMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteTemperatureController?: Maybe<(
+    { __typename?: 'DeleteTemperatureControllerReturnType' }
+    & Pick<DeleteTemperatureControllerReturnType, 'id' | 'temperatureProbes'>
   )> }
 );
 
-export const TemperatureControllerFieldsFragmentDoc = gql`
-    fragment TemperatureControllerFields on TemperatureController {
-  id
-  name
-  setPoint
-  calculatedDuty
-  dutyCycle
-  mode
-  tempProbeDetails {
+
+export const DeleteTemperatureControllerDocument = gql`
+    mutation DeleteTemperatureController($id: ID!) {
+  deleteTemperatureController(id: $id) {
     id
-    name
-    reading
-    physAddr
-  }
-  heatSettings {
-    configured
-    gpio
-    proportional
-    integral
-    derivative
-    cycleTime
-  }
-  coolSettings {
-    configured
-    gpio
-    proportional
-    integral
-    derivative
-    cycleTime
-  }
-  manualSettings {
-    configured
-    dutyCycle
-    cycleTime
-  }
-  hysteriaSettings {
-    configured
-    minTime
-    minTemp
-    maxTemp
+    temperatureProbes
   }
 }
     `;
+export type DeleteTemperatureControllerMutationFn = Apollo.MutationFunction<DeleteTemperatureControllerMutation, DeleteTemperatureControllerMutationVariables>;
+
+/**
+ * __useDeleteTemperatureControllerMutation__
+ *
+ * To run a mutation, you first call `useDeleteTemperatureControllerMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteTemperatureControllerMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteTemperatureControllerMutation, { data, loading, error }] = useDeleteTemperatureControllerMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteTemperatureControllerMutation(baseOptions?: Apollo.MutationHookOptions<DeleteTemperatureControllerMutation, DeleteTemperatureControllerMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteTemperatureControllerMutation, DeleteTemperatureControllerMutationVariables>(DeleteTemperatureControllerDocument, options);
+      }
+export type DeleteTemperatureControllerMutationHookResult = ReturnType<typeof useDeleteTemperatureControllerMutation>;
+export type DeleteTemperatureControllerMutationResult = Apollo.MutationResult<DeleteTemperatureControllerMutation>;
+export type DeleteTemperatureControllerMutationOptions = Apollo.BaseMutationOptions<DeleteTemperatureControllerMutation, DeleteTemperatureControllerMutationVariables>;

@@ -1,0 +1,6 @@
+mutation DeleteTemperatureController($id: ID!) {
+  deleteTemperatureController(id: $id) {
+    id
+    temperatureProbes
+  }
+}

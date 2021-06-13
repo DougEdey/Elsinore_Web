@@ -82,20 +82,39 @@ export default function Device({ temperatureController }) {
   });
 
   const fields = useList([temperatureControllerSettings])[0];
+  fields.manualSettings = useList([
+    temperatureControllerSettings.manualSettings,
+  ])[0];
+  fields.coolSettings = useList([
+    temperatureControllerSettings.coolSettings,
+  ])[0];
+  fields.heatSettings = useList([
+    temperatureControllerSettings.heatSettings,
+  ])[0];
+  fields.hysteriaSettings = useList([
+    temperatureControllerSettings.hysteriaSettings,
+  ])[0];
+  delete fields.__typename;
+  delete fields.coolSettings.__typename;
+  delete fields.heatSettings.__typename;
+  delete fields.hysteriaSettings.__typename;
+  delete fields.manualSettings.__typename;
+  delete fields.tempProbeDetails;
+  delete fields.calculatedDuty;
+  delete fields.dutyCycle;
 
   const [updateController] = useMutation(UpdateTemperatureController);
 
   const { submit } = useSubmit(async (fieldValues) => {
-    console.log(getValues(fieldValues));
     await updateController({
       variables: { controllerSettings: getValues(fieldValues) },
     });
     return { status: "success" };
   }, fields);
 
-  const settingsButtonColor = expanded ? "primary" : "subdued";
-  const heatButtonColor = expandedHeat ? "primary" : "subdued";
-  const coolButtonColor = expandedCool ? "primary" : "subdued";
+  const settingsButtonColor = expanded ? "primary" : "disabled";
+  const heatButtonColor = expandedHeat ? "primary" : "disabled";
+  const coolButtonColor = expandedCool ? "primary" : "disabled";
 
   return (
     <Card
@@ -193,6 +212,22 @@ export default function Device({ temperatureController }) {
               <Input {...fields.heatSettings.gpio} />
             </FormControl>
             <FormControl>
+              <InputLabel htmlFor="dutyCycle">Cycle Time</InputLabel>
+              <Input {...fields.heatSettings.cycleTime} />
+            </FormControl>
+            <FormControl>
+              <InputLabel htmlFor="proportional">Proportional (P)</InputLabel>
+              <Input {...fields.heatSettings.proportional} />
+            </FormControl>
+            <FormControl>
+              <InputLabel htmlFor="integral">Integral (I)</InputLabel>
+              <Input {...fields.heatSettings.integral} />
+            </FormControl>
+            <FormControl>
+              <InputLabel htmlFor="derivative">Derivative (D)</InputLabel>
+              <Input {...fields.heatSettings.derivative} />
+            </FormControl>
+            <FormControl>
               <Button type="submit" value="submit">
                 Save
               </Button>
@@ -206,6 +241,22 @@ export default function Device({ temperatureController }) {
             <FormControl>
               <InputLabel htmlFor="coolSettings.gpio">GPIO</InputLabel>
               <Input {...fields.coolSettings.gpio} />
+            </FormControl>
+            <FormControl>
+              <InputLabel htmlFor="dutyCycle">Cycle Time</InputLabel>
+              <Input {...fields.coolSettings.cycleTime} />
+            </FormControl>
+            <FormControl>
+              <InputLabel htmlFor="proportional">Proportional (P)</InputLabel>
+              <Input {...fields.coolSettings.proportional} />
+            </FormControl>
+            <FormControl>
+              <InputLabel htmlFor="integral">Integral (I)</InputLabel>
+              <Input {...fields.coolSettings.integral} />
+            </FormControl>
+            <FormControl>
+              <InputLabel htmlFor="derivative">Derivative (D)</InputLabel>
+              <Input {...fields.coolSettings.derivative} />
             </FormControl>
             <FormControl>
               <Button type="submit" value="submit">

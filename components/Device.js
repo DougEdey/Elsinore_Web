@@ -11,12 +11,13 @@ import {
   InputLabel,
   IconButton,
   Typography,
+  Select,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import SettingsIcon from "@material-ui/icons/Settings";
 import WhatshotIcon from "@material-ui/icons/Whatshot";
 import AcUnitIcon from "@material-ui/icons/AcUnit";
-import { useField, useSubmit, getValues } from "@shopify/react-form";
+import { useList, useSubmit, getValues } from "@shopify/react-form";
 import clsx from "clsx";
 import { useMutation } from "@apollo/client";
 
@@ -80,27 +81,7 @@ export default function Device({ temperatureController }) {
     ...temperatureController,
   });
 
-  const id = useField(temperatureControllerSettings?.id, [
-    temperatureControllerSettings.id,
-  ]);
-  const name = useField(temperatureControllerSettings?.name, [
-    temperatureControllerSettings.name,
-  ]);
-
-  const fields = {
-    id,
-    name,
-    heatSettings: {
-      gpio: useField(temperatureControllerSettings?.heatSettings?.gpio, [
-        temperatureControllerSettings.heatSettings.gpio,
-      ]),
-    },
-    coolSettings: {
-      gpio: useField(temperatureControllerSettings?.coolSettings?.gpio, [
-        temperatureControllerSettings.coolSettings.gpio,
-      ]),
-    },
-  };
+  const fields = useList([temperatureControllerSettings])[0];
 
   const [updateController] = useMutation(UpdateTemperatureController);
 
@@ -171,10 +152,30 @@ export default function Device({ temperatureController }) {
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
           <form onSubmit={submit} className={classes.rootForm}>
-            <Input {...fields.id} type="hidden" />
             <FormControl>
-              <InputLabel htmlFor="id">Name</InputLabel>
+              <InputLabel htmlFor="name">Name</InputLabel>
               <Input {...fields.name} />
+            </FormControl>
+            <FormControl>
+              <InputLabel htmlFor="mode">Mode</InputLabel>
+              <Select {...fields.mode}>
+                <option aria-label="Off" value="off">
+                  Off
+                </option>
+                <option aria-label="Auto" value="auto">
+                  Auto
+                </option>
+                <option aria-label="Manual" value="manual">
+                  Manual
+                </option>
+                <option aria-label="Hysteria" value="hysteria">
+                  Hysteria
+                </option>
+              </Select>
+            </FormControl>
+            <FormControl>
+              <InputLabel htmlFor="setPoint">Set Point</InputLabel>
+              <Input {...fields.setPoint} />
             </FormControl>
             <FormControl>
               <Button type="submit" value="submit">
@@ -188,7 +189,7 @@ export default function Device({ temperatureController }) {
         <CardContent>
           <form onSubmit={submit} className={classes.rootForm}>
             <FormControl>
-              <InputLabel htmlFor="id">GPIO</InputLabel>
+              <InputLabel htmlFor="heatSettings.gpio">GPIO</InputLabel>
               <Input {...fields.heatSettings.gpio} />
             </FormControl>
             <FormControl>
@@ -203,7 +204,7 @@ export default function Device({ temperatureController }) {
         <CardContent>
           <form onSubmit={submit} className={classes.rootForm}>
             <FormControl>
-              <InputLabel htmlFor="id">GPIO</InputLabel>
+              <InputLabel htmlFor="coolSettings.gpio">GPIO</InputLabel>
               <Input {...fields.coolSettings.gpio} />
             </FormControl>
             <FormControl>

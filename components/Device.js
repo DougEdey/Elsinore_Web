@@ -137,7 +137,6 @@ export default function Device({ temperatureController }) {
   const manualButtonColor = expandedManual ? "primary" : "";
 
   const currentState = () => {
-    console.log(temperatureController.mode);
     if (temperatureController.mode === "auto") {
       return (
         <CircularProgressWithLabel

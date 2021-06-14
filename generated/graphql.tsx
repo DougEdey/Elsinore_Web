@@ -255,51 +255,49 @@ export type TemperatureProbe = {
 };
 
 
-export type DeleteTemperatureControllerMutationVariables = Exact<{
-  id: Scalars['ID'];
-}>;
+export type GetProbesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type DeleteTemperatureControllerMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteTemperatureController?: Maybe<(
-    { __typename?: 'DeleteTemperatureControllerReturnType' }
-    & Pick<DeleteTemperatureControllerReturnType, 'id' | 'temperatureProbes'>
-  )> }
+export type GetProbesQuery = (
+  { __typename?: 'Query' }
+  & { probeList?: Maybe<Array<Maybe<(
+    { __typename?: 'TemperatureProbe' }
+    & Pick<TemperatureProbe, 'physAddr'>
+  )>>> }
 );
 
 
-export const DeleteTemperatureControllerDocument = gql`
-    mutation DeleteTemperatureController($id: ID!) {
-  deleteTemperatureController(id: $id) {
-    id
-    temperatureProbes
+export const GetProbesDocument = gql`
+    query getProbes {
+  probeList {
+    physAddr
   }
 }
     `;
-export type DeleteTemperatureControllerMutationFn = Apollo.MutationFunction<DeleteTemperatureControllerMutation, DeleteTemperatureControllerMutationVariables>;
 
 /**
- * __useDeleteTemperatureControllerMutation__
+ * __useGetProbesQuery__
  *
- * To run a mutation, you first call `useDeleteTemperatureControllerMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteTemperatureControllerMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
+ * To run a query within a React component, call `useGetProbesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProbesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
  *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const [deleteTemperatureControllerMutation, { data, loading, error }] = useDeleteTemperatureControllerMutation({
+ * const { data, loading, error } = useGetProbesQuery({
  *   variables: {
- *      id: // value for 'id'
  *   },
  * });
  */
-export function useDeleteTemperatureControllerMutation(baseOptions?: Apollo.MutationHookOptions<DeleteTemperatureControllerMutation, DeleteTemperatureControllerMutationVariables>) {
+export function useGetProbesQuery(baseOptions?: Apollo.QueryHookOptions<GetProbesQuery, GetProbesQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteTemperatureControllerMutation, DeleteTemperatureControllerMutationVariables>(DeleteTemperatureControllerDocument, options);
+        return Apollo.useQuery<GetProbesQuery, GetProbesQueryVariables>(GetProbesDocument, options);
       }
-export type DeleteTemperatureControllerMutationHookResult = ReturnType<typeof useDeleteTemperatureControllerMutation>;
-export type DeleteTemperatureControllerMutationResult = Apollo.MutationResult<DeleteTemperatureControllerMutation>;
-export type DeleteTemperatureControllerMutationOptions = Apollo.BaseMutationOptions<DeleteTemperatureControllerMutation, DeleteTemperatureControllerMutationVariables>;
+export function useGetProbesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProbesQuery, GetProbesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetProbesQuery, GetProbesQueryVariables>(GetProbesDocument, options);
+        }
+export type GetProbesQueryHookResult = ReturnType<typeof useGetProbesQuery>;
+export type GetProbesLazyQueryHookResult = ReturnType<typeof useGetProbesLazyQuery>;
+export type GetProbesQueryResult = Apollo.QueryResult<GetProbesQuery, GetProbesQueryVariables>;

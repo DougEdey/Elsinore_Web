@@ -5,6 +5,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import App from "./App";
 import Header from "./Header";
 import Container from "./Container";
+import ActionFab from "./ActionFab";
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -20,6 +21,7 @@ export default function MainLayout() {
       <Header />
       <Toolbar />
       <Container className={classes.content} />
+      <ActionFab />
     </App>
   );
 }

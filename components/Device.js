@@ -17,6 +17,7 @@ import {
   IconButton,
   Typography,
   Select,
+  Snackbar,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import SettingsIcon from "@material-ui/icons/Settings";
@@ -361,20 +362,24 @@ Device.propTypes = {
 
 function DeleteProbeDialog({ temperatureController, open, setOpen }) {
   const [deleteController] = useMutation(DeleteTemperatureController);
+  const [showDeleted, setShowDeleted] = useState(false);
 
   const handleDelete = async () => {
     await deleteController({
       variables: { id: temperatureController.id },
     });
     setOpen(false);
+    setShowDeleted(true);
   };
 
   const handleClose = () => {
     setOpen(false);
   };
 
+  const deletedText = `Deleted ${temperatureController.name}`;
+
   return (
-    <div>
+    <>
       <Dialog
         open={open}
         onClose={handleClose}
@@ -398,7 +403,12 @@ function DeleteProbeDialog({ temperatureController, open, setOpen }) {
           </Button>
         </DialogActions>
       </Dialog>
-    </div>
+      <Snackbar
+        open={showDeleted}
+        onClose={() => setShowDeleted(false)}
+        message={deletedText}
+      />
+    </>
   );
 }
 

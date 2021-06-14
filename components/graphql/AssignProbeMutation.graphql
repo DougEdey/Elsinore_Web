@@ -1,0 +1,8 @@
+#import "./TemperatureControllerFields.graphql"
+
+mutation AssignProbeMutation($name: String!, $address: String!) {
+  assignProbe(name: $name, address: $address) {
+    ...TemperatureControllerFields
+  }
+}
+

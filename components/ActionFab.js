@@ -35,6 +35,12 @@ const useStyles = makeStyles((theme) => ({
     bottom: theme.spacing(2),
     right: theme.spacing(2),
   },
+  rootForm: {
+    "& > *": {
+      margin: theme.spacing(1),
+      width: "95%",
+    },
+  },
 }));
 
 export default function ActionFab() {
@@ -87,6 +93,7 @@ export default function ActionFab() {
 }
 
 function AssignTemperatureProbe({ open, setOpen }) {
+  const classes = useStyles();
   const [assignProbe] = useMutation(AssignProbeMutation);
   const { loading, data } = useQuery(getProbes);
   const [showCreated, setShowCreated] = useState(false);
@@ -159,17 +166,16 @@ function AssignTemperatureProbe({ open, setOpen }) {
         <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
           Assign Temperature Probe
         </DialogTitle>
-        <form onSubmit={submit}>
+        <form onSubmit={submit} className={classes.rootForm}>
           <DialogContent>
             <DialogContentText>
               Assign a temperature probe to a controller.
             </DialogContentText>
-            <FormControl>
+            <FormControl fullWidth>
               <InputLabel htmlFor="name">Name</InputLabel>
               <Input {...nameField} />
             </FormControl>
-            <br />
-            <FormControl>
+            <FormControl fullWidth>
               <InputLabel htmlFor="address">Address</InputLabel>
               <Select {...addressField}>{addressOptions}</Select>
             </FormControl>

@@ -23,6 +23,7 @@ import {
 import AddIcon from "@material-ui/icons/Add";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import { useField, useForm, getValues } from "@shopify/react-form";
+import { useI18n } from "@shopify/react-i18n";
 
 import AssignProbeMutation from "./graphql/AssignProbeMutation.graphql";
 import getProbes from "./graphql/TempProbesQuery.graphql";
@@ -47,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ActionFab() {
+  const [i18n] = useI18n();
   const [anchorEl, setAnchorEl] = useState(null);
   const [assignProbeOpen, setAssignProbeOpen] = useState(false);
   const classes = useStyles();
@@ -84,18 +86,19 @@ export default function ActionFab() {
         onClose={handleClose}
       >
         <MenuItem onClick={toggleAssignProbe}>
-          Assign Temperature Probe
+          {i18n.translate("ActionFab.menu.assignProbe")}
         </MenuItem>
       </Menu>
       <AssignTemperatureProbe
         open={assignProbeOpen}
         setOpen={setAssignProbeOpen}
+        i18n={i18n}
       />
     </div>
   );
 }
 
-function AssignTemperatureProbe({ open, setOpen }) {
+function AssignTemperatureProbe({ open, setOpen, i18n }) {
   const classes = useStyles();
   const [assignProbe] = useMutation(AssignProbeMutation);
   const [lazyGetProbes, { loading, data }] = useLazyQuery(getProbes, {
@@ -153,7 +156,7 @@ function AssignTemperatureProbe({ open, setOpen }) {
   });
 
   if (loading) {
-    return <div>Loading</div>;
+    return <div>{i18n.translate("ActionFab.assignProbeDialog.loading")}</div>;
   }
 
   const addressOptions =
@@ -170,7 +173,9 @@ function AssignTemperatureProbe({ open, setOpen }) {
         );
       })
     ) : (
-      <option value="">No Probes</option>
+      <option value="">
+        {i18n.translate("ActionFab.assignProbeDialog.noProbes")}
+      </option>
     );
 
   const createdText = `Created ${fields.name.value}`;
@@ -183,19 +188,23 @@ function AssignTemperatureProbe({ open, setOpen }) {
         aria-labelledby="draggable-dialog-title"
       >
         <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
-          Assign Temperature Probe
+          {i18n.translate("ActionFab.assignProbeDialog.title")}
         </DialogTitle>
         <form onSubmit={submit} className={classes.rootForm}>
           <DialogContent>
             <DialogContentText>
-              Assign a temperature probe to a controller.
+              {i18n.translate("ActionFab.assignProbeDialog.content")}
             </DialogContentText>
             <FormControl fullWidth>
-              <InputLabel htmlFor="name">Name</InputLabel>
+              <InputLabel htmlFor="name">
+                {i18n.translate("ActionFab.assignProbeDialog.form.name")}
+              </InputLabel>
               <Input {...fields.name} />
             </FormControl>
             <FormControl fullWidth>
-              <InputLabel htmlFor="address">Address</InputLabel>
+              <InputLabel htmlFor="address">
+                {i18n.translate("ActionFab.assignProbeDialog.form.address")}
+              </InputLabel>
               <Select
                 {...fields.address}
                 startAdornment={
@@ -212,10 +221,10 @@ function AssignTemperatureProbe({ open, setOpen }) {
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose} color="secondary">
-              Cancel
+              {i18n.translate("ActionFab.assignProbeDialog.form.cancel")}
             </Button>
             <Button type="submit" value="submit">
-              Create
+              {i18n.translate("ActionFab.assignProbeDialog.form.create")}
             </Button>
           </DialogActions>
         </form>
@@ -232,4 +241,5 @@ function AssignTemperatureProbe({ open, setOpen }) {
 AssignTemperatureProbe.propTypes = {
   open: PropTypes.bool.isRequired,
   setOpen: PropTypes.func.isRequired,
+  i18n: PropTypes.func.isRequired,
 };

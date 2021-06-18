@@ -9,6 +9,7 @@ import { useApollo } from "../lib/apolloClient";
 
 export default function App({ Component, pageProps }) {
   const apolloClient = useApollo(pageProps);
+
   React.useEffect(() => {
     // Remove the server-side injected CSS.
     const jssStyles = document.querySelector("#jss-server-side");
@@ -21,7 +22,6 @@ export default function App({ Component, pageProps }) {
     <>
       <ApolloProvider client={apolloClient}>
         <Head>
-          <title>Elsinore Web</title>
           <meta
             name="viewport"
             content="minimum-scale=1, initial-scale=1, width=device-width"

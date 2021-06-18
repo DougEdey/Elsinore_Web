@@ -1,11 +1,13 @@
 import React from "react";
 import { useQuery } from "@apollo/client";
+import { useI18n } from "@shopify/react-i18n";
 
 import ErrorMessage from "./ErrorMessage";
 import Device from "./Device";
 import DeviceListQuery from "./graphql/DeviceListQuery.graphql";
 
 export default function DeviceList() {
+  const [i18n] = useI18n();
   const { loading, error, data } = useQuery(DeviceListQuery, {
     notifyOnNetworkStatusChange: true,
     pollInterval: 5000,
@@ -15,7 +17,7 @@ export default function DeviceList() {
     return <ErrorMessage message="Error loading devices." />;
   }
   if (loading && !data) {
-    return <div>Loading</div>;
+    return <div>{i18n.translate("DeviceList.loading")}</div>;
   }
 
   const allControllers = data.temperatureControllers;
@@ -26,6 +28,6 @@ export default function DeviceList() {
         temperatureController={temperatureController}
         key={temperatureController.name}
       />
-    )) || <div>No data</div>
+    )) || <div>{i18n.translate("DeviceList.noData")}</div>
   );
 }

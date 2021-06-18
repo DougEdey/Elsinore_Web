@@ -3,8 +3,11 @@ import PropTypes from "prop-types";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
+import { useI18n } from "@shopify/react-i18n";
 
 export default function CircularProgressWithLabel(props) {
+  const [i18n] = useI18n();
+
   return (
     <Box position="relative" display="inline-flex">
       <CircularProgress variant="determinate" {...props} />
@@ -19,7 +22,9 @@ export default function CircularProgressWithLabel(props) {
         justifyContent="center"
       >
         <Typography variant="caption" component="div" color="textSecondary">
-          {`${Math.round(props.value)}%`}
+          {i18n.translate("CircularProgressWithLabel.percentage", {
+            percent: Math.round(props.value),
+          })}
         </Typography>
       </Box>
     </Box>

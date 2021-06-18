@@ -762,7 +762,20 @@
           {
             "name": "probeList",
             "description": "Get the list of probes",
-            "args": [],
+            "args": [
+              {
+                "name": "available",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
             "type": {
               "kind": "LIST",
               "name": null,

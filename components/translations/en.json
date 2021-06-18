@@ -1,0 +1,56 @@
+{
+  "Device": {
+    "mode": {
+      "off": "Off",
+      "auto": "Auto",
+      "manual": "Manual",
+      "hysteria": "Hysteria"
+    },
+    "input": {
+      "name": "Name",
+      "mode": "Mode",
+      "save": "Save",
+      "gpio": "GPIO",
+      "dutyCycle": "Duty Cycle",
+      "cycleTime": "Cycle Time",
+      "setPoint": "Set Point",
+      "proportional": "Proportional (P)",
+      "integral": "Integral (I)",
+      "derivative": "Derivative (D)"
+    },
+    "deleteDialog": {
+      "title": "Delete {name}?",
+      "body": "Are you sure you want to delete {name}? This is not reversible!",
+      "cancel": "Cancel",
+      "delete": "Delete"
+    }
+  },
+  "ActionFab": {
+    "menu": {
+      "assignProbe": "Assign Temperature Probe"
+    },
+    "assignProbeDialog": {
+      "noProbes": "No probes",
+      "loading": "Loading",
+      "title": "Assign Temperature Probe",
+      "content": "Assign probe to a controller",
+      "form": {
+        "create": "Create",
+        "cancel": "Cancel",
+        "address": "Address",
+        "name": "Name"
+      }
+    }
+  },
+  "CircularProgressWithLabel": {
+    "percentage": "{percent}%"
+  },
+  "DeviceList": {
+    "loading": "Loading",
+    "noData": "No Data"
+  },
+  "Header": {
+    "name": "Elsinore"
+  },
+  "defaultTitle": "Elsinore Web"
+}

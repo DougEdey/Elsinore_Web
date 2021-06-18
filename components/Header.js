@@ -3,6 +3,7 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
+import { useI18n } from "@shopify/react-i18n";
 
 import ThemeToggle from "./ThemeToggle";
 
@@ -18,11 +19,13 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Header() {
   const classes = useStyles();
+  const [i18n] = useI18n();
+
   return (
     <AppBar position="fixed" className={classes.appBar}>
       <Toolbar>
         <Typography vairant="h6" className={classes.title}>
-          Elsinore
+          {i18n.translate("Header.name")}
         </Typography>
         <ThemeToggle />
       </Toolbar>

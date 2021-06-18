@@ -28,6 +28,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import { useList, useSubmit, getValues } from "@shopify/react-form";
 import clsx from "clsx";
 import { useMutation } from "@apollo/client";
+import { useI18n } from "@shopify/react-i18n";
 
 import CircularProgressWithLabel from "./CircularProgressWithLabel";
 import UpdateTemperatureController from "./graphql/UpdateTemperatureController.graphql";
@@ -65,6 +66,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Device({ temperatureController }) {
+  const [i18n] = useI18n();
   const classes = useStyles();
   const [expanded, setExpanded] = useState(false);
   const [expandedHeat, setExpandedHeat] = useState(false);
@@ -151,7 +153,11 @@ export default function Device({ temperatureController }) {
         />
       );
     } else if (temperatureController.mode === "off") {
-      return <Typography component="h2">Off</Typography>;
+      return (
+        <Typography component="h2">
+          {i18n.translate("Device.mode.off")}
+        </Typography>
+      );
     }
   };
 
@@ -229,33 +235,51 @@ export default function Device({ temperatureController }) {
           <CardContent>
             <form onSubmit={submit} className={classes.rootForm}>
               <FormControl>
-                <InputLabel htmlFor="name">Name</InputLabel>
+                <InputLabel htmlFor="name">
+                  {i18n.translate("Device.input.name")}
+                </InputLabel>
                 <Input {...fields.name} />
               </FormControl>
               <FormControl>
-                <InputLabel htmlFor="mode">Mode</InputLabel>
+                <InputLabel htmlFor="mode">
+                  {i18n.translate("Device.input.mode")}
+                </InputLabel>
                 <Select {...fields.mode}>
-                  <option aria-label="Off" value="off">
-                    Off
+                  <option
+                    aria-label={i18n.translate("Device.mode.off")}
+                    value="off"
+                  >
+                    {i18n.translate("Device.mode.off")}
                   </option>
-                  <option aria-label="Auto" value="auto">
-                    Auto
+                  <option
+                    aria-label={i18n.translate("Device.mode.auto")}
+                    value="auto"
+                  >
+                    {i18n.translate("Device.mode.auto")}
                   </option>
-                  <option aria-label="Manual" value="manual">
-                    Manual
+                  <option
+                    aria-label={i18n.translate("Device.mode.manual")}
+                    value="manual"
+                  >
+                    {i18n.translate("Device.mode.manual")}
                   </option>
-                  <option aria-label="Hysteria" value="hysteria">
-                    Hysteria
+                  <option
+                    aria-label={i18n.translate("Device.mode.hysteria")}
+                    value="hysteria"
+                  >
+                    {i18n.translate("Device.mode.hysteria")}
                   </option>
                 </Select>
               </FormControl>
               <FormControl>
-                <InputLabel htmlFor="setPoint">Set Point</InputLabel>
+                <InputLabel htmlFor="setPoint">
+                  {i18n.translate("Device.input.setPoint")}
+                </InputLabel>
                 <Input {...fields.setPoint} />
               </FormControl>
               <FormControl>
                 <Button type="submit" value="submit">
-                  Save
+                  {i18n.translate("Device.input.save")}
                 </Button>
               </FormControl>
             </form>
@@ -265,28 +289,38 @@ export default function Device({ temperatureController }) {
           <CardContent>
             <form onSubmit={submit} className={classes.rootForm}>
               <FormControl>
-                <InputLabel htmlFor="heatSettings.gpio">GPIO</InputLabel>
+                <InputLabel htmlFor="heatSettings.gpio">
+                  {i18n.translate("Device.input.gpio")}
+                </InputLabel>
                 <Input {...fields.heatSettings.gpio} />
               </FormControl>
               <FormControl>
-                <InputLabel htmlFor="dutyCycle">Cycle Time</InputLabel>
+                <InputLabel htmlFor="dutyCycle">
+                  {i18n.translate("Device.input.cycleTime")}
+                </InputLabel>
                 <Input {...fields.heatSettings.cycleTime} />
               </FormControl>
               <FormControl>
-                <InputLabel htmlFor="proportional">Proportional (P)</InputLabel>
+                <InputLabel htmlFor="proportional">
+                  {i18n.translate("Device.input.proportional")}
+                </InputLabel>
                 <Input {...fields.heatSettings.proportional} />
               </FormControl>
               <FormControl>
-                <InputLabel htmlFor="integral">Integral (I)</InputLabel>
+                <InputLabel htmlFor="integral">
+                  {i18n.translate("Device.input.integral")}
+                </InputLabel>
                 <Input {...fields.heatSettings.integral} />
               </FormControl>
               <FormControl>
-                <InputLabel htmlFor="derivative">Derivative (D)</InputLabel>
+                <InputLabel htmlFor="derivative">
+                  {i18n.translate("Device.input.derivative")}
+                </InputLabel>
                 <Input {...fields.heatSettings.derivative} />
               </FormControl>
               <FormControl>
                 <Button type="submit" value="submit">
-                  Save
+                  {i18n.translate("Device.input.save")}
                 </Button>
               </FormControl>
             </form>
@@ -296,28 +330,38 @@ export default function Device({ temperatureController }) {
           <CardContent>
             <form onSubmit={submit} className={classes.rootForm}>
               <FormControl>
-                <InputLabel htmlFor="coolSettings.gpio">GPIO</InputLabel>
+                <InputLabel htmlFor="coolSettings.gpio">
+                  {i18n.translate("Device.input.gpio")}
+                </InputLabel>
                 <Input {...fields.coolSettings.gpio} />
               </FormControl>
               <FormControl>
-                <InputLabel htmlFor="dutyCycle">Cycle Time</InputLabel>
+                <InputLabel htmlFor="dutyCycle">
+                  {i18n.translate("Device.input.cycleTime")}
+                </InputLabel>
                 <Input {...fields.coolSettings.cycleTime} />
               </FormControl>
               <FormControl>
-                <InputLabel htmlFor="proportional">Proportional (P)</InputLabel>
+                <InputLabel htmlFor="proportional">
+                  {i18n.translate("Device.input.proportional")}
+                </InputLabel>
                 <Input {...fields.coolSettings.proportional} />
               </FormControl>
               <FormControl>
-                <InputLabel htmlFor="integral">Integral (I)</InputLabel>
+                <InputLabel htmlFor="integral">
+                  {i18n.translate("Device.input.integral")}
+                </InputLabel>
                 <Input {...fields.coolSettings.integral} />
               </FormControl>
               <FormControl>
-                <InputLabel htmlFor="derivative">Derivative (D)</InputLabel>
+                <InputLabel htmlFor="derivative">
+                  {i18n.translate("Device.input.derivative")}
+                </InputLabel>
                 <Input {...fields.coolSettings.derivative} />
               </FormControl>
               <FormControl>
                 <Button type="submit" value="submit">
-                  Save
+                  {i18n.translate("Device.input.save")}
                 </Button>
               </FormControl>
             </form>
@@ -327,20 +371,26 @@ export default function Device({ temperatureController }) {
           <CardContent>
             <form onSubmit={submit} className={classes.rootForm}>
               <FormControl>
-                <InputLabel htmlFor="heatSettings.gpio">GPIO</InputLabel>
+                <InputLabel htmlFor="heatSettings.gpio">
+                  {i18n.translate("Device.input.gpio")}
+                </InputLabel>
                 <Input {...fields.heatSettings.gpio} />
               </FormControl>
               <FormControl>
-                <InputLabel htmlFor="name">Duty Cycle</InputLabel>
+                <InputLabel htmlFor="name">
+                  {i18n.translate("Device.input.dutyCycle")}
+                </InputLabel>
                 <Input {...fields.manualSettings.dutyCycle} />
               </FormControl>
               <FormControl>
-                <InputLabel htmlFor="setPoint">Cycle Time</InputLabel>
+                <InputLabel htmlFor="setPoint">
+                  {i18n.translate("Device.input.cycleTime")}
+                </InputLabel>
                 <Input {...fields.manualSettings.cycleTime} />
               </FormControl>
               <FormControl>
                 <Button type="submit" value="submit">
-                  Save
+                  {i18n.translate("Device.input.save")}
                 </Button>
               </FormControl>
             </form>
@@ -351,6 +401,7 @@ export default function Device({ temperatureController }) {
         temperatureController={temperatureController}
         open={deleteOpen}
         setOpen={setDeleteOpen}
+        i18n={i18n}
       />
     </>
   );
@@ -360,7 +411,7 @@ Device.propTypes = {
   temperatureController: PropTypes.object.isRequired,
 };
 
-function DeleteProbeDialog({ temperatureController, open, setOpen }) {
+function DeleteProbeDialog({ temperatureController, open, setOpen, i18n }) {
   const [deleteController] = useMutation(DeleteTemperatureController);
   const [showDeleted, setShowDeleted] = useState(false);
 
@@ -386,20 +437,23 @@ function DeleteProbeDialog({ temperatureController, open, setOpen }) {
         aria-labelledby="draggable-dialog-title"
       >
         <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
-          Delete {temperatureController.name}?
+          {i18n.translate("Device.deleteDialog.title", {
+            name: temperatureController.name,
+          })}
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Are you sure you want to delete {temperatureController.name}? This
-            is not reversible!
+            {i18n.translate("Device.deleteDialog.body", {
+              name: temperatureController.name,
+            })}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
-            Cancel
+            {i18n.translate("Device.deleteDialog.cancel")}
           </Button>
           <Button onClick={handleDelete} color="secondary">
-            Delete
+            {i18n.translate("Device.deleteDialog.delete")}
           </Button>
         </DialogActions>
       </Dialog>
@@ -416,4 +470,5 @@ DeleteProbeDialog.propTypes = {
   temperatureController: PropTypes.object.isRequired,
   open: PropTypes.bool.isRequired,
   setOpen: PropTypes.func.isRequired,
+  i18n: PropTypes.func.isRequired,
 };

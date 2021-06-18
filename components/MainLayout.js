@@ -1,6 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
+import { I18nContext, I18nManager } from "@shopify/react-i18n";
 
 import App from "./App";
 import Header from "./Header";
@@ -14,14 +15,24 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const locale = "en";
+const i18nManager = new I18nManager({
+  locale,
+  onError(error) {
+    console.log(error);
+  },
+});
+
 export default function MainLayout() {
   const classes = useStyles();
   return (
-    <App>
-      <Header />
-      <Toolbar />
-      <Container className={classes.content} />
-      <ActionFab />
-    </App>
+    <I18nContext.Provider value={i18nManager}>
+      <App>
+        <Header />
+        <Toolbar />
+        <Container className={classes.content} />
+        <ActionFab />
+      </App>
+    </I18nContext.Provider>
   );
 }

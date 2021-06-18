@@ -16,6 +16,7 @@
     "@material-ui/styles": "^4.11.4",
     "@shopify/react-form": "^1.0.1",
     "@shopify/react-hooks": "^2.0.1",
+    "@shopify/react-i18n": "^6.0.2",
     "clsx": "^1.1.1",
     "deepmerge": "^4.2.2",
     "graphql": "^15.5.0",

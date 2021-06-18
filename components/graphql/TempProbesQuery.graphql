@@ -1,5 +1,5 @@
 query getProbes {
-  probeList {
+  probeList(available: true) {
     physAddr
   }
 }

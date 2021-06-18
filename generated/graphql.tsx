@@ -171,6 +171,11 @@ export type QueryProbeArgs = {
 };
 
 
+export type QueryProbeListArgs = {
+  available?: Maybe<Scalars['Boolean']>;
+};
+
+
 export type QueryFetchProbesArgs = {
   addresses?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
@@ -269,7 +274,7 @@ export type GetProbesQuery = (
 
 export const GetProbesDocument = gql`
     query getProbes {
-  probeList {
+  probeList(available: true) {
     physAddr
   }
 }

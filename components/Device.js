@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
+import _ from "lodash";
 import PropTypes from "prop-types";
+
 import {
   Dialog,
   DialogActions,
@@ -10,8 +12,11 @@ import {
   Card,
   CardActions,
   CardContent,
+  Checkbox,
   Collapse,
   FormControl,
+  FormControlLabel,
+  FormGroup,
   Input,
   InputLabel,
   IconButton,
@@ -25,7 +30,6 @@ import WhatshotIcon from "@material-ui/icons/Whatshot";
 import AcUnitIcon from "@material-ui/icons/AcUnit";
 import SkipNextIcon from "@material-ui/icons/SkipNext";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { useList, useSubmit, getValues } from "@shopify/react-form";
 import clsx from "clsx";
 import { useMutation } from "@apollo/client";
 import { useI18n } from "@shopify/react-i18n";
@@ -99,41 +103,39 @@ export default function Device({ temperatureController }) {
     }
   };
 
-  const [temperatureControllerSettings] = React.useState({
-    ...temperatureController,
-  });
-
-  const fields = useList([temperatureControllerSettings])[0];
-  fields.manualSettings = useList([
-    temperatureControllerSettings.manualSettings,
-  ])[0];
-  fields.coolSettings = useList([
-    temperatureControllerSettings.coolSettings,
-  ])[0];
-  fields.heatSettings = useList([
-    temperatureControllerSettings.heatSettings,
-  ])[0];
-  fields.hysteriaSettings = useList([
-    temperatureControllerSettings.hysteriaSettings,
-  ])[0];
-  delete fields.__typename;
-  delete fields.coolSettings.__typename;
-  delete fields.heatSettings.__typename;
-  delete fields.hysteriaSettings.__typename;
-  delete fields.manualSettings.__typename;
-  delete fields.tempProbeDetails;
-  delete fields.calculatedDuty;
-  delete fields.dutyCycle;
+  const [temperatureControllerState, setTemperatureControllerState] =
+    React.useState(_.cloneDeep(temperatureController));
+  delete temperatureControllerState.__typename;
+  delete temperatureControllerState.coolSettings.__typename;
+  delete temperatureControllerState.heatSettings.__typename;
+  delete temperatureControllerState.hysteriaSettings.__typename;
+  delete temperatureControllerState.manualSettings.__typename;
+  delete temperatureControllerState.tempProbeDetails;
+  delete temperatureControllerState.calculatedDuty;
+  delete temperatureControllerState.dutyCycle;
 
   const [updateController] = useMutation(UpdateTemperatureController);
+  const handleSubmit = useCallback(
+    async (event) => {
+      event.preventDefault();
+      console.log("Submit", temperatureControllerState);
+      const [result] = await updateController({
+        variables: { controllerSettings: temperatureControllerState },
+      });
+      console.log(result);
+      return { status: "success" };
+    },
+    [temperatureControllerState, updateController]
+  );
 
-  const { submit } = useSubmit(async (fieldValues) => {
-    await updateController({
-      variables: { controllerSettings: getValues(fieldValues) },
-    });
-    return { status: "success" };
-  }, fields);
-
+  const handleSelectChange = (event) => {
+    _.set(temperatureControllerState, event.target.name, event.target.checked);
+    setTemperatureControllerState(temperatureControllerState);
+  };
+  const handleTextChange = (event) => {
+    _.set(temperatureControllerState, event.target.name, event.target.value);
+    setTemperatureControllerState(temperatureControllerState);
+  };
   const settingsButtonColor = expanded ? "primary" : "";
   const heatButtonColor = expandedHeat ? "primary" : "";
   const coolButtonColor = expandedCool ? "primary" : "";
@@ -214,14 +216,16 @@ export default function Device({ temperatureController }) {
           >
             <AcUnitIcon color={coolButtonColor} />
           </IconButton>
-          <IconButton
-            className={clsx(classes.expand)}
-            onClick={() => handleExpandClick("manual")}
-            aria-expanded={expandedManual}
-            aria-label="show more"
-          >
-            <SkipNextIcon color={manualButtonColor} />
-          </IconButton>
+          {temperatureControllerState.manualSettings.configured && (
+            <IconButton
+              className={clsx(classes.expand)}
+              onClick={() => handleExpandClick("manual")}
+              aria-expanded={expandedManual}
+              aria-label="show more"
+            >
+              <SkipNextIcon color={manualButtonColor} />
+            </IconButton>
+          )}
           <IconButton
             className={clsx(classes.expand)}
             onClick={() => setDeleteOpen(true)}
@@ -233,18 +237,25 @@ export default function Device({ temperatureController }) {
         </CardActions>
         <Collapse in={expanded} timeout="auto" unmountOnExit>
           <CardContent>
-            <form onSubmit={submit} className={classes.rootForm}>
+            <form onSubmit={handleSubmit} className={classes.rootForm}>
               <FormControl>
                 <InputLabel htmlFor="name">
                   {i18n.translate("Device.input.name")}
                 </InputLabel>
-                <Input {...fields.name} />
+                <Input
+                  name="name"
+                  onChange={handleTextChange}
+                  value={temperatureControllerState.name}
+                />
               </FormControl>
               <FormControl>
                 <InputLabel htmlFor="mode">
                   {i18n.translate("Device.input.mode")}
                 </InputLabel>
-                <Select {...fields.mode}>
+                <Select
+                  onChange={handleTextChange}
+                  value={temperatureControllerState.mode}
+                >
                   <option
                     aria-label={i18n.translate("Device.mode.off")}
                     value="off"
@@ -275,8 +286,43 @@ export default function Device({ temperatureController }) {
                 <InputLabel htmlFor="setPoint">
                   {i18n.translate("Device.input.setPoint")}
                 </InputLabel>
-                <Input {...fields.setPoint} />
+                <Input
+                  name="setPoint"
+                  onChange={handleTextChange}
+                  value={temperatureControllerState.setPoint}
+                />
               </FormControl>
+              <FormGroup row>
+                {/* <FormControlLabel
+                  label={i18n.translate("Device.input.heatConfigured")}
+                  control={
+                    <Checkbox
+                      {...asChoiceField(fields.heatSettings.configured)}
+                    />
+                  }
+                />
+                <FormControlLabel
+                  label={i18n.translate("Device.input.coolConfigured")}
+                  control={
+                    <Checkbox
+                      {...asChoiceField(fields.coolSettings.configured)}
+                    />
+                  }
+                /> */}
+                <FormControlLabel
+                  label={i18n.translate("Device.input.manualConfigured")}
+                  control={
+                    <Checkbox
+                      checked={
+                        temperatureControllerState.manualSettings.configured
+                      }
+                      name="manualSettings.configured"
+                      value="enabled"
+                      onChange={handleSelectChange}
+                    />
+                  }
+                />
+              </FormGroup>
               <FormControl>
                 <Button type="submit" value="submit">
                   {i18n.translate("Device.input.save")}
@@ -287,36 +333,56 @@ export default function Device({ temperatureController }) {
         </Collapse>
         <Collapse in={expandedHeat} timeout="auto" unmountOnExit>
           <CardContent>
-            <form onSubmit={submit} className={classes.rootForm}>
+            <form onSubmit={handleSubmit} className={classes.rootForm}>
               <FormControl>
                 <InputLabel htmlFor="heatSettings.gpio">
                   {i18n.translate("Device.input.gpio")}
                 </InputLabel>
-                <Input {...fields.heatSettings.gpio} />
+                <Input
+                  name="heatSettings.gpio"
+                  onChange={handleTextChange}
+                  value={temperatureControllerState.heatSettings.gpio}
+                />
               </FormControl>
               <FormControl>
                 <InputLabel htmlFor="dutyCycle">
                   {i18n.translate("Device.input.cycleTime")}
                 </InputLabel>
-                <Input {...fields.heatSettings.cycleTime} />
+                <Input
+                  name="heatSettings.cycleTime"
+                  onChange={handleTextChange}
+                  value={temperatureControllerState.heatSettings.cycleTime}
+                />
               </FormControl>
               <FormControl>
                 <InputLabel htmlFor="proportional">
                   {i18n.translate("Device.input.proportional")}
                 </InputLabel>
-                <Input {...fields.heatSettings.proportional} />
+                <Input
+                  name="heatSettings.proportional"
+                  onChange={handleTextChange}
+                  value={temperatureControllerState.heatSettings.proportional}
+                />
               </FormControl>
               <FormControl>
                 <InputLabel htmlFor="integral">
                   {i18n.translate("Device.input.integral")}
                 </InputLabel>
-                <Input {...fields.heatSettings.integral} />
+                <Input
+                  name="heatSettings.integral"
+                  onChange={handleTextChange}
+                  value={temperatureControllerState.heatSettings.integral}
+                />
               </FormControl>
               <FormControl>
                 <InputLabel htmlFor="derivative">
                   {i18n.translate("Device.input.derivative")}
                 </InputLabel>
-                <Input {...fields.heatSettings.derivative} />
+                <Input
+                  name="heatSettings.derivative"
+                  onChange={handleTextChange}
+                  value={temperatureControllerState.heatSettings.derivative}
+                />
               </FormControl>
               <FormControl>
                 <Button type="submit" value="submit">
@@ -328,36 +394,56 @@ export default function Device({ temperatureController }) {
         </Collapse>
         <Collapse in={expandedCool} timeout="auto" unmountOnExit>
           <CardContent>
-            <form onSubmit={submit} className={classes.rootForm}>
+            <form onSubmit={handleSubmit} className={classes.rootForm}>
               <FormControl>
                 <InputLabel htmlFor="coolSettings.gpio">
                   {i18n.translate("Device.input.gpio")}
                 </InputLabel>
-                <Input {...fields.coolSettings.gpio} />
+                <Input
+                  name="coolSettings.gpio"
+                  onChange={handleTextChange}
+                  value={temperatureControllerState.coolSettings.gpio}
+                />
               </FormControl>
               <FormControl>
                 <InputLabel htmlFor="dutyCycle">
                   {i18n.translate("Device.input.cycleTime")}
                 </InputLabel>
-                <Input {...fields.coolSettings.cycleTime} />
+                <Input
+                  name="coolSettings.cycleTime"
+                  onChange={handleTextChange}
+                  value={temperatureControllerState.coolSettings.cycleTime}
+                />
               </FormControl>
               <FormControl>
                 <InputLabel htmlFor="proportional">
                   {i18n.translate("Device.input.proportional")}
                 </InputLabel>
-                <Input {...fields.coolSettings.proportional} />
+                <Input
+                  name="coolSettings.proportional"
+                  onChange={handleTextChange}
+                  value={temperatureControllerState.coolSettings.proportional}
+                />
               </FormControl>
               <FormControl>
                 <InputLabel htmlFor="integral">
                   {i18n.translate("Device.input.integral")}
                 </InputLabel>
-                <Input {...fields.coolSettings.integral} />
+                <Input
+                  name="coolSettings.integral"
+                  onChange={handleTextChange}
+                  value={temperatureControllerState.coolSettings.integral}
+                />
               </FormControl>
               <FormControl>
                 <InputLabel htmlFor="derivative">
                   {i18n.translate("Device.input.derivative")}
                 </InputLabel>
-                <Input {...fields.coolSettings.derivative} />
+                <Input
+                  name="coolSettings.derivative"
+                  onChange={handleTextChange}
+                  value={temperatureControllerState.coolSettings.derivative}
+                />
               </FormControl>
               <FormControl>
                 <Button type="submit" value="submit">
@@ -369,24 +455,36 @@ export default function Device({ temperatureController }) {
         </Collapse>
         <Collapse in={expandedManual} timeout="auto" unmountOnExit>
           <CardContent>
-            <form onSubmit={submit} className={classes.rootForm}>
+            <form onSubmit={handleSubmit} className={classes.rootForm}>
               <FormControl>
                 <InputLabel htmlFor="heatSettings.gpio">
                   {i18n.translate("Device.input.gpio")}
                 </InputLabel>
-                <Input {...fields.heatSettings.gpio} />
+                <Input
+                  name="heatSettings.gpio"
+                  onChange={handleTextChange}
+                  value={temperatureControllerState.heatSettings.gpio}
+                />
               </FormControl>
               <FormControl>
                 <InputLabel htmlFor="name">
                   {i18n.translate("Device.input.dutyCycle")}
                 </InputLabel>
-                <Input {...fields.manualSettings.dutyCycle} />
+                <Input
+                  name="manualSettings.dutyCycle"
+                  onChange={handleTextChange}
+                  value={temperatureControllerState.manualSettings.dutyCycle}
+                />
               </FormControl>
               <FormControl>
                 <InputLabel htmlFor="setPoint">
                   {i18n.translate("Device.input.cycleTime")}
                 </InputLabel>
-                <Input {...fields.manualSettings.cycleTime} />
+                <Input
+                  name="manualSettings.cycleTime"
+                  onChange={handleTextChange}
+                  value={temperatureControllerState.manualSettings.cycleTime}
+                />
               </FormControl>
               <FormControl>
                 <Button type="submit" value="submit">

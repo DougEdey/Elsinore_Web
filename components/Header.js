@@ -13,7 +13,6 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1,
-    alignSelf: "flex-end",
   },
 }));
 
@@ -24,7 +23,7 @@ export default function Header() {
   return (
     <AppBar position="fixed" className={classes.appBar}>
       <Toolbar>
-        <Typography vairant="h6" className={classes.title}>
+        <Typography variant="h6" className={classes.title}>
           {i18n.translate("Header.name")}
         </Typography>
         <ThemeToggle />

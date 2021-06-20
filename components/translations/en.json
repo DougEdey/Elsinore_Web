@@ -16,7 +16,10 @@
       "setPoint": "Set Point",
       "proportional": "Proportional (P)",
       "integral": "Integral (I)",
-      "derivative": "Derivative (D)"
+      "derivative": "Derivative (D)",
+      "heatConfigured": "Heating",
+      "coolConfigured": "Cooling",
+      "manualConfigured": "Manual"
     },
     "deleteDialog": {
       "title": "Delete {name}?",

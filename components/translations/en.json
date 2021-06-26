@@ -53,7 +53,15 @@
     "noData": "No Data"
   },
   "Header": {
-    "name": "Elsinore"
+    "name": "Elsinore",
+    "editDialog": {
+      "title": "Edit Brewery Name",
+      "body": "Update settings for {name}",
+      "breweryName": "Brewery Name",
+      "cancel": "Cancel",
+      "update": "Update",
+      "updatedText": "Saved!"
+    }
   },
   "defaultTitle": "Elsinore Web"
 }

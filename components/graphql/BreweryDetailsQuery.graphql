@@ -1,0 +1,5 @@
+query BreweryDetailsQuery {
+  settings {
+    breweryName
+  }
+}

@@ -113,11 +113,9 @@ export default function Device({ temperatureController }) {
 
   const [updateController] = useMutation(UpdateTemperatureController);
   async function onSubmit(values) {
-    console.log("Submit", values);
-    const { result, data } = await updateController({
+    await updateController({
       variables: { controllerSettings: values },
     });
-    console.log(result, data);
     return { status: "success" };
   }
 

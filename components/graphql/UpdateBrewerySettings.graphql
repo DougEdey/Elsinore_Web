@@ -1,0 +1,5 @@
+mutation UpdateBrewerySettings($updatedSettings: SettingsInput!) {
+  updateSettings(settings: $updatedSettings) {
+    breweryName
+  }
+}

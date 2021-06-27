@@ -22,12 +22,12 @@ export default function DeviceList() {
 
   const allControllers = data.temperatureControllers;
 
-  return (
-    allControllers.map((temperatureController) => (
-      <Device
-        temperatureController={temperatureController}
-        key={temperatureController.name}
-      />
-    )) || <div>{i18n.translate("DeviceList.noData")}</div>
-  );
+  const controllers = allControllers.map((temperatureController) => (
+    <Device
+      temperatureController={temperatureController}
+      key={temperatureController.name}
+    />
+  )) || <div>{i18n.translate("DeviceList.noData")}</div>;
+
+  return controllers;
 }

@@ -38,7 +38,6 @@ const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.paper,
     maxWidth: 400,
-    margin: theme.spacing(2),
   },
   bullet: {
     display: "inline-block",

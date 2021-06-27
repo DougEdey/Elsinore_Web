@@ -1,8 +1,7 @@
-import React from "react";
 import PropTypes from "prop-types";
 
 export default function App({ children }) {
-  return <main>{children}</main>;
+  return children;
 }
 
 App.propTypes = {

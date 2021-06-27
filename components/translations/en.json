@@ -63,5 +63,10 @@
       "updatedText": "Saved!"
     }
   },
-  "defaultTitle": "Elsinore Web"
+  "defaultTitle": "Elsinore Web",
+  "Sidebar": {
+    "reddit": "Reddit",
+    "discord": "StrangeBrew",
+    "github": "GitHub"
+  }
 }

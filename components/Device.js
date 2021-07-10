@@ -118,10 +118,10 @@ export default function Device({ temperatureController }) {
     return { status: "success" };
   }
 
-  const settingsButtonColor = expanded ? "primary" : "";
-  const heatButtonColor = expandedHeat ? "primary" : "";
-  const coolButtonColor = expandedCool ? "primary" : "";
-  const manualButtonColor = expandedManual ? "primary" : "";
+  const settingsButtonColor = expanded ? "primary" : "inherit";
+  const heatButtonColor = expandedHeat ? "primary" : "inherit";
+  const coolButtonColor = expandedCool ? "primary" : "inherit";
+  const manualButtonColor = expandedManual ? "primary" : "inherit";
 
   const currentState = () => {
     if (temperatureController.mode === "auto") {
@@ -465,5 +465,5 @@ DeleteProbeDialog.propTypes = {
   temperatureController: PropTypes.object.isRequired,
   open: PropTypes.bool.isRequired,
   setOpen: PropTypes.func.isRequired,
-  i18n: PropTypes.func.isRequired,
+  i18n: PropTypes.object.isRequired,
 };

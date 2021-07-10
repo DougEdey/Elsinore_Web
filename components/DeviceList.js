@@ -4,6 +4,7 @@ import { useI18n } from "@shopify/react-i18n";
 
 import ErrorMessage from "./ErrorMessage";
 import Device from "./Device";
+import NoDevices from "./NoDevices";
 import DeviceListQuery from "./graphql/DeviceListQuery.graphql";
 
 export default function DeviceList() {
@@ -11,23 +12,37 @@ export default function DeviceList() {
   const { loading, error, data } = useQuery(DeviceListQuery, {
     notifyOnNetworkStatusChange: true,
     pollInterval: 5000,
+    // errorPolicy: 'all',
   });
 
-  if (error) {
-    return <ErrorMessage message="Error loading devices." />;
-  }
+  const errorComponent = error ? (
+    <ErrorMessage message={i18n.translate("defaultNetworkError")} />
+  ) : null;
+
   if (loading && !data) {
     return <div>{i18n.translate("DeviceList.loading")}</div>;
   }
 
-  const allControllers = data.temperatureControllers;
+  const allControllers = data?.temperatureControllers;
 
-  const controllers = allControllers.map((temperatureController) => (
-    <Device
-      temperatureController={temperatureController}
-      key={temperatureController.name}
-    />
-  )) || <div>{i18n.translate("DeviceList.noData")}</div>;
+  if (allControllers && allControllers.length) {
+    const controllers = allControllers.map((temperatureController) => (
+      <Device
+        temperatureController={temperatureController}
+        key={temperatureController.name}
+      />
+    )) || <div>{i18n.translate("DeviceList.noData")}</div>;
 
-  return controllers;
+    return (
+      <>
+        {controllers}
+        {errorComponent}
+      </>
+    );
+  }
+
+  if (errorComponent) {
+    return errorComponent;
+  }
+  return <NoDevices />;
 }

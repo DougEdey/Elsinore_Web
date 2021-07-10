@@ -1,5 +1,8 @@
 {
+  "defaultNetworkError": "Error communicating with the server, is it running?",
   "Device": {
+    "noDevices": "No Devices configured!",
+    "noDevicesInstructions": "Click the button below to start configuring a controller",
     "mode": {
       "off": "Off",
       "auto": "Auto",

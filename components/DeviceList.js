@@ -4,6 +4,7 @@ import { useI18n } from "@shopify/react-i18n";
 
 import ErrorMessage from "./ErrorMessage";
 import Device from "./Device";
+import NoDevices from "./NoDevices";
 import DeviceListQuery from "./graphql/DeviceListQuery.graphql";
 
 export default function DeviceList() {
@@ -43,5 +44,5 @@ export default function DeviceList() {
   if (errorComponent) {
     return errorComponent;
   }
-  return "No devices";
+  return <NoDevices />;
 }

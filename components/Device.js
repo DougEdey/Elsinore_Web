@@ -465,5 +465,5 @@ DeleteProbeDialog.propTypes = {
   temperatureController: PropTypes.object.isRequired,
   open: PropTypes.bool.isRequired,
   setOpen: PropTypes.func.isRequired,
-  i18n: PropTypes.func.isRequired,
+  i18n: PropTypes.object.isRequired,
 };

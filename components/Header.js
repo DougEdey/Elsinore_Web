@@ -122,12 +122,9 @@ export default function Header({ drawerOpen, setDrawerOpen }) {
     <>
       <AppBar
         position="fixed"
-        className={
-          (classes.appBar,
-          {
-            [classes.appBarShift]: drawerOpen,
-          })
-        }
+        className={clsx(classes.appBar, {
+          [classes.appBarShift]: drawerOpen,
+        })}
       >
         <Toolbar>
           <IconButton
@@ -219,6 +216,7 @@ Header.propTypes = {
   drawerOpen: PropTypes.bool.isRequired,
   setDrawerOpen: PropTypes.func.isRequired,
 };
+
 function EditBreweryNameDialog({ settings, open, toggleVisibility, i18n }) {
   const [showUpdated, setShowUpdated] = useState(false);
   const updatedText = i18n.translate("Header.editDialog.updatedText");
@@ -294,8 +292,8 @@ function EditBreweryNameDialog({ settings, open, toggleVisibility, i18n }) {
 }
 
 EditBreweryNameDialog.propTypes = {
-  settings: PropTypes.object.isRequired,
+  settings: PropTypes.object,
   open: PropTypes.bool.isRequired,
   toggleVisibility: PropTypes.func.isRequired,
-  i18n: PropTypes.func.isRequired,
+  i18n: PropTypes.object.isRequired,
 };

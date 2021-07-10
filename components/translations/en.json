@@ -1,4 +1,5 @@
 {
+  "defaultNetworkError": "Error communicating with the server, is it running?",
   "Device": {
     "mode": {
       "off": "Off",

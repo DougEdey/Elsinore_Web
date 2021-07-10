@@ -118,10 +118,6 @@ export default function Header({ drawerOpen, setDrawerOpen }) {
     setShowDialog(!showDialog);
   }, [setShowDialog, showDialog]);
 
-  if (!data) {
-    return "Loading...";
-  }
-
   return (
     <>
       <AppBar
@@ -239,6 +235,10 @@ function EditBreweryNameDialog({ settings, open, toggleVisibility, i18n }) {
     });
     setShowUpdated(true);
     toggleVisibility();
+  }
+
+  if (!settings) {
+    return null;
   }
 
   const mainForm = (

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import _ from "lodash";
 import PropTypes from "prop-types";
 import { Form } from "react-final-form";
+import { OnChange } from "react-final-form-listeners";
 import { TextField, Checkboxes, Select } from "mui-rff";
 import {
   Dialog,
@@ -72,6 +73,7 @@ export default function Device({ temperatureController }) {
   const [expandedCool, setExpandedCool] = useState(false);
   const [expandedManual, setExpandedManual] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+
   const multipleProbes = temperatureController.tempProbeDetails.length > 1;
 
   const handleExpandClick = (pane) => {
@@ -109,6 +111,16 @@ export default function Device({ temperatureController }) {
   delete temperatureControllerState.tempProbeDetails;
   delete temperatureControllerState.calculatedDuty;
   delete temperatureControllerState.dutyCycle;
+
+  const [heatConfigured, setHeatConfigured] = useState(
+    temperatureControllerState.heatSettings.configured
+  );
+  const [coolConfigured, setCoolConfigured] = useState(
+    temperatureControllerState.coolSettings.configured
+  );
+  const [manualConfigured, setManualConfigured] = useState(
+    temperatureControllerState.manualSettings.configured
+  );
 
   const [updateController] = useMutation(UpdateTemperatureController);
   async function onSubmit(values) {
@@ -152,7 +164,11 @@ export default function Device({ temperatureController }) {
       render={({ handleSubmit, pristine }) => (
         <form onSubmit={handleSubmit} noValidate>
           <TextField label={i18n.translate("Device.input.name")} name="name" />
-          <Select label={i18n.translate("Device.input.mode")} name="mode">
+          <Select
+            label={i18n.translate("Device.input.mode")}
+            name="mode"
+            defaultValue="off"
+          >
             <option aria-label={i18n.translate("Device.mode.off")} value="off">
               {i18n.translate("Device.mode.off")}
             </option>
@@ -188,6 +204,11 @@ export default function Device({ temperatureController }) {
                 value: temperatureControllerState.heatSettings.configured,
               }}
             />
+            <OnChange name="heatSettings.configured">
+              {(val) => {
+                setHeatConfigured(val);
+              }}
+            </OnChange>
             <Checkboxes
               formControlProps={{ row: true }}
               name="coolSettings.configured"
@@ -196,6 +217,11 @@ export default function Device({ temperatureController }) {
                 value: temperatureControllerState.coolSettings.configured,
               }}
             />
+            <OnChange name="coolSettings.configured">
+              {(val) => {
+                setCoolConfigured(val);
+              }}
+            </OnChange>
             <Checkboxes
               formControlProps={{ row: true }}
               name="manualSettings.configured"
@@ -204,6 +230,11 @@ export default function Device({ temperatureController }) {
                 value: temperatureControllerState.manualSettings.configured,
               }}
             />
+            <OnChange name="manualSettings.configured">
+              {(val) => {
+                setManualConfigured(val);
+              }}
+            </OnChange>
           </FormGroup>
           <FormControl>
             <Button type="submit" value="submit" disabled={pristine}>
@@ -257,6 +288,7 @@ export default function Device({ temperatureController }) {
             onClick={() => handleExpandClick("heat")}
             aria-expanded={expandedHeat}
             aria-label="show more"
+            disabled={!heatConfigured}
           >
             <WhatshotIcon color={heatButtonColor} />
           </IconButton>
@@ -265,6 +297,7 @@ export default function Device({ temperatureController }) {
             onClick={() => handleExpandClick("cool")}
             aria-expanded={expandedCool}
             aria-label="show more"
+            disabled={!coolConfigured}
           >
             <AcUnitIcon color={coolButtonColor} />
           </IconButton>
@@ -273,6 +306,7 @@ export default function Device({ temperatureController }) {
             onClick={() => handleExpandClick("manual")}
             aria-expanded={expandedManual}
             aria-label="show more"
+            disabled={!manualConfigured}
           >
             <SkipNextIcon color={manualButtonColor} />
           </IconButton>

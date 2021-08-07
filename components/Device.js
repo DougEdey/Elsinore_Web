@@ -112,8 +112,12 @@ export default function Device({ temperatureController }) {
     temperatureController.manualSettings.configured
   );
 
-  const [updateController] = useMutation(UpdateTemperatureController, {
+  const [
+    updateController,
+    { loading: controllerUpdating, error: updateError },
+  ] = useMutation(UpdateTemperatureController, {
     refetchQueries: ["DeviceListQuery"],
+    errorPolicy: "all",
   });
   const [formValue, setFormValue] = useState(
     _.cloneDeep(temperatureController)
@@ -421,6 +425,11 @@ export default function Device({ temperatureController }) {
           </CardContent>
         </Collapse>
       </Card>
+      <Snackbar open={controllerUpdating} message="Controller updating" />
+      <Snackbar
+        open={updateError}
+        message={`Error updating probe! ${updateError?.message}`}
+      />
       <DeleteProbeDialog
         temperatureController={temperatureController}
         open={deleteOpen}

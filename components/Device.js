@@ -156,9 +156,8 @@ export default function Device({ temperatureController }) {
         break;
       }
     }
-    console.log(value);
+
     setFormValue(_.set(formValue, event.target.name, value));
-    console.log(_.get(formValue, event.target.name));
   };
 
   const settingsButtonColor = expanded ? "primary" : "inherit";
@@ -397,16 +396,16 @@ export default function Device({ temperatureController }) {
                 <Grid item>
                   <TextField
                     label={i18n.translate("Device.input.dutyCycle")}
-                    name="heatSettings.dutyCycle"
-                    defaultValue={_.get(formValue, "heatSettings.dutyCycle")}
+                    name="manualSettings.dutyCycle"
+                    defaultValue={_.get(formValue, "manualSettings.dutyCycle")}
                     onChange={handleChange}
                   />
                 </Grid>
                 <Grid item>
                   <TextField
                     label={i18n.translate("Device.input.cycleTime")}
-                    name="heatSettings.cycleTime"
-                    defaultValue={_.get(formValue, "heatSettings.cycleTime")}
+                    name="manualSettings.cycleTime"
+                    defaultValue={_.get(formValue, "manualSettings.cycleTime")}
                     onChange={handleChange}
                   />
                 </Grid>

@@ -249,6 +249,7 @@ export default function Device({ temperatureController }) {
                 name="heatSettings.configured"
                 checked={formValue.heatSettings.configured}
                 onChange={handleChange}
+                aria-label="Heat Settings Configured"
               />
             }
             label={i18n.translate("Device.input.heatConfigured")}
@@ -322,7 +323,8 @@ export default function Device({ temperatureController }) {
             className={clsx(classes.expand)}
             onClick={() => handleExpandClick("general")}
             aria-expanded={expanded}
-            aria-label="show more"
+            aria-label="general settings"
+            name="general"
           >
             <SettingsIcon color={settingsButtonColor} />
           </IconButton>
@@ -330,7 +332,7 @@ export default function Device({ temperatureController }) {
             className={clsx(classes.expand)}
             onClick={() => handleExpandClick("heat")}
             aria-expanded={expandedHeat}
-            aria-label="show more"
+            aria-label="heat settings"
             disabled={!heatConfigured}
           >
             <WhatshotIcon color={heatButtonColor} />
@@ -339,7 +341,7 @@ export default function Device({ temperatureController }) {
             className={clsx(classes.expand)}
             onClick={() => handleExpandClick("cool")}
             aria-expanded={expandedCool}
-            aria-label="show more"
+            aria-label="cool settings"
             disabled={!coolConfigured}
           >
             <AcUnitIcon color={coolButtonColor} />
@@ -348,7 +350,7 @@ export default function Device({ temperatureController }) {
             className={clsx(classes.expand)}
             onClick={() => handleExpandClick("manual")}
             aria-expanded={expandedManual}
-            aria-label="show more"
+            aria-label="manual settings"
             disabled={!manualConfigured}
           >
             <SkipNextIcon color={manualButtonColor} />

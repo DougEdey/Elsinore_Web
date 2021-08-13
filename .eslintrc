@@ -4,5 +4,9 @@
     "plugin:@shopify/react",
     "plugin:@shopify/node",
     "plugin:@shopify/prettier"
-  ]
+  ],
+  "env": {
+    "jest": true
+  }
+  
 }

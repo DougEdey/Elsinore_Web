@@ -26,7 +26,6 @@ Then you can go to `http://localhost:3000` for the Web UI by default.
 
 The server assumes you have the Elsinore server running on a host with the name `raspberrypi` (you can update this for now in [lib/apolloclient.js](./lib/apolloclient.js), it will be make configurable)
 
-
 On first run, with no devices configured, you'll get an empty landing page with a button to add a new controller
 
 ![Empty Landing Page](./files/empty_landing.png "Empty Landing Page")
@@ -78,12 +77,13 @@ There is a light theme available (it's the default)
 And the side bar has quick links to GitHub, Reddit, and Discourse
 
 ![Sidebar](./files/sidebar.png "Sidebar")
+
 ## Todo list
 
 * [ ] Configurable Backend server
 * [ ] Switch support
 * [ ] Timer Support
 * [ ] Proper error support (Elsinore returns 422s on errors and Apollo does not handle this well)
-* [ ] Tests
+* [x] Tests (Kinda, I have some)
 * [ ] UX care
 * [ ] Lost more I can't think of

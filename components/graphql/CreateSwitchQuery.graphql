@@ -1,0 +1,8 @@
+mutation ModifySwitch($switchSettings: SwitchSettingsInput!) {
+  modifySwitch(switchSettings: $switchSettings) {
+    id
+    name
+    gpio
+    state
+  }
+}

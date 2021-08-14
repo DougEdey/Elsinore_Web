@@ -1,0 +1,8 @@
+query Switches {
+  switches{
+    id
+    name
+    gpio
+    state
+  }
+}

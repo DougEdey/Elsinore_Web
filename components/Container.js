@@ -2,6 +2,7 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 
 import DeviceList from "./DeviceList";
+import SwitchList from "./SwitchList";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -24,6 +25,7 @@ export default function Container() {
     <main className={classes.content}>
       <div className={classes.toolbar}>
         <DeviceList />
+        <SwitchList />
       </div>
     </main>
   );

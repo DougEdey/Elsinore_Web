@@ -1,5 +1,5 @@
 {
-  "schema": "https://raspberrypi:8000/graphql"
+  "schema": "https://elsinore:8000/graphql"
   "includes": [
     "**/*.graphql"
   ]

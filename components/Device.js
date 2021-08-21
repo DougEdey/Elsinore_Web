@@ -2,15 +2,11 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import _ from "lodash";
 import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   Button,
   Card,
   CardActions,
   CardContent,
+  CardHeader,
   Collapse,
   FormControl,
   FormControlLabel,
@@ -33,9 +29,9 @@ import { useMutation } from "@apollo/client";
 import { useI18n } from "@shopify/react-i18n";
 
 import PidSettingsForm from "./PidSettingsForm";
+import DeleteDeviceDialog from "./DeleteDeviceDialog";
 import CircularProgressWithLabel from "./CircularProgressWithLabel";
 import UpdateTemperatureController from "./graphql/UpdateTemperatureController.graphql";
-import DeleteTemperatureController from "./graphql/DeleteTemperatureController.graphql";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -297,10 +293,20 @@ export default function Device({ temperatureController }) {
         key={temperatureController.id}
         variant="outlined"
       >
+        <CardHeader
+          title={temperatureController.name}
+          action={
+            <IconButton
+              className={clsx(classes.expand)}
+              onClick={() => setDeleteOpen(true)}
+              aria-expanded={expandedManual}
+              aria-label="delete"
+            >
+              <DeleteIcon color="secondary" />
+            </IconButton>
+          }
+        />
         <CardContent>
-          <Typography colour="textSecondary" gutterBottom>
-            {temperatureController.name}
-          </Typography>
           {temperatureController.tempProbeDetails.map((probe) => {
             let probeDescription = probe.reading;
             if (multipleProbes) {
@@ -354,14 +360,6 @@ export default function Device({ temperatureController }) {
             disabled={!manualConfigured}
           >
             <SkipNextIcon color={manualButtonColor} />
-          </IconButton>
-          <IconButton
-            className={clsx(classes.expand)}
-            onClick={() => setDeleteOpen(true)}
-            aria-expanded={expandedManual}
-            aria-label="delete"
-          >
-            <DeleteIcon color="secondary" />
           </IconButton>
         </CardActions>
         <Collapse in={expanded} timeout="auto" unmountOnExit>
@@ -432,8 +430,8 @@ export default function Device({ temperatureController }) {
         open={updateError}
         message={`Error updating probe! ${updateError?.message}`}
       />
-      <DeleteProbeDialog
-        temperatureController={temperatureController}
+      <DeleteDeviceDialog
+        device={temperatureController}
         open={deleteOpen}
         setOpen={setDeleteOpen}
         i18n={i18n}
@@ -444,66 +442,4 @@ export default function Device({ temperatureController }) {
 
 Device.propTypes = {
   temperatureController: PropTypes.object.isRequired,
-};
-
-function DeleteProbeDialog({ temperatureController, open, setOpen, i18n }) {
-  const [deleteController] = useMutation(DeleteTemperatureController);
-  const [showDeleted, setShowDeleted] = useState(false);
-
-  const handleDelete = async () => {
-    await deleteController({
-      variables: { id: temperatureController.id },
-    });
-    setOpen(false);
-    setShowDeleted(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const deletedText = `Deleted ${temperatureController.name}`;
-
-  return (
-    <>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="draggable-dialog-title"
-      >
-        <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
-          {i18n.translate("Device.deleteDialog.title", {
-            name: temperatureController.name,
-          })}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {i18n.translate("Device.deleteDialog.body", {
-              name: temperatureController.name,
-            })}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            {i18n.translate("Device.deleteDialog.cancel")}
-          </Button>
-          <Button onClick={handleDelete} color="secondary">
-            {i18n.translate("Device.deleteDialog.delete")}
-          </Button>
-        </DialogActions>
-      </Dialog>
-      <Snackbar
-        open={showDeleted}
-        onClose={() => setShowDeleted(false)}
-        message={deletedText}
-      />
-    </>
-  );
-}
-
-DeleteProbeDialog.propTypes = {
-  temperatureController: PropTypes.object.isRequired,
-  open: PropTypes.bool.isRequired,
-  setOpen: PropTypes.func.isRequired,
-  i18n: PropTypes.object.isRequired,
 };

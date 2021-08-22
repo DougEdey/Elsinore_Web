@@ -1,11 +1,16 @@
 import React from "react";
-import PropTypes from "prop-types";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import { useI18n } from "@shopify/react-i18n";
 
-export default function CircularProgressWithLabel(props) {
+type CircularProgressTypes = {
+  value: number;
+};
+
+export default function CircularProgressWithLabel(
+  props: CircularProgressTypes
+) {
   const [i18n] = useI18n();
 
   return (
@@ -30,7 +35,3 @@ export default function CircularProgressWithLabel(props) {
     </Box>
   );
 }
-
-CircularProgressWithLabel.propTypes = {
-  value: PropTypes.number.isRequired,
-};

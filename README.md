@@ -24,7 +24,7 @@ npm run dev
 
 Then you can go to `http://localhost:3000` for the Web UI by default.
 
-The server assumes you have the Elsinore server running on a host with the name `raspberrypi` (you can update this for now in [lib/apolloclient.js](./lib/apolloclient.js), it will be make configurable)
+The server assumes you have the Elsinore server running on a host with the name `elsinore` (you can update this for now in [lib/apolloclient.js](./lib/apolloclient.js), it will be made configurable)
 
 On first run, with no devices configured, you'll get an empty landing page with a button to add a new controller
 

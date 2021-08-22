@@ -24,9 +24,8 @@ import {
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import { useI18n } from "@shopify/react-i18n";
+import { useI18n, I18n } from "@shopify/react-i18n";
 import { useQuery, useMutation } from "@apollo/client";
-import PropTypes from "prop-types";
 import clsx from "clsx";
 import RedditIcon from "@material-ui/icons/Reddit";
 import GitHubIcon from "@material-ui/icons/GitHub";
@@ -97,7 +96,98 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Header({ drawerOpen, setDrawerOpen }) {
+type EditBreweryNameDialogProps = {
+  settings: any;
+  open: boolean;
+  toggleVisibility: Function;
+  i18n: I18n;
+};
+
+function EditBreweryNameDialog({
+  settings,
+  open,
+  toggleVisibility,
+  i18n,
+}: EditBreweryNameDialogProps) {
+  const [showUpdated, setShowUpdated] = useState(false);
+  const updatedText = i18n.translate("Header.editDialog.updatedText");
+
+  const updatedSettings = settings ? _.cloneDeep(settings) : {};
+  delete updatedSettings.__typename;
+
+  const [updateBrewerySettings] = useMutation(UpdateBrewerySettings);
+  async function onSubmit(values: any) {
+    await updateBrewerySettings({
+      variables: {
+        updatedSettings: values,
+      },
+    });
+    setShowUpdated(true);
+    toggleVisibility();
+  }
+
+  if (!settings) {
+    return null;
+  }
+
+  const mainForm = (
+    <Form
+      onSubmit={onSubmit}
+      initialValues={updatedSettings}
+      render={({ handleSubmit, dirty }) => (
+        <form onSubmit={handleSubmit} noValidate>
+          <TextField
+            label={i18n.translate("Header.editDialog.breweryName")}
+            name="breweryName"
+          />
+          <DialogActions>
+            <Button onClick={toggleVisibility} color="primary">
+              {i18n.translate("Header.editDialog.cancel")}
+            </Button>
+            <Button onClick={handleSubmit} disabled={!dirty} color="secondary">
+              {i18n.translate("Header.editDialog.update")}
+            </Button>
+          </DialogActions>
+        </form>
+      )}
+    />
+  );
+  return (
+    <>
+      <Dialog
+        open={open}
+        onClose={toggleVisibility}
+        aria-labelledby="draggable-dialog-title"
+      >
+        <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
+          {i18n.translate("Header.editDialog.title", {
+            name: settings.breweryName,
+          })}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {i18n.translate("Header.editDialog.body", {
+              name: settings.breweryName,
+            })}
+          </DialogContentText>
+          {mainForm}
+        </DialogContent>
+      </Dialog>
+      <Snackbar
+        open={showUpdated}
+        onClose={() => setShowUpdated(false)}
+        message={updatedText}
+      />
+    </>
+  );
+}
+
+type HeaderProps = {
+  drawerOpen: boolean;
+  setDrawerOpen: Function;
+};
+
+export default function Header({ drawerOpen, setDrawerOpen }: HeaderProps) {
   const theme = useTheme();
   const chevronIcon =
     theme.direction === "ltr" ? <ChevronLeftIcon /> : <ChevronRightIcon />;
@@ -211,89 +301,3 @@ export default function Header({ drawerOpen, setDrawerOpen }) {
     </>
   );
 }
-
-Header.propTypes = {
-  drawerOpen: PropTypes.bool.isRequired,
-  setDrawerOpen: PropTypes.func.isRequired,
-};
-
-function EditBreweryNameDialog({ settings, open, toggleVisibility, i18n }) {
-  const [showUpdated, setShowUpdated] = useState(false);
-  const updatedText = i18n.translate("Header.editDialog.updatedText");
-
-  const updatedSettings = settings ? _.cloneDeep(settings) : {};
-  delete updatedSettings.__typename;
-
-  const [updateBrewerySettings] = useMutation(UpdateBrewerySettings);
-  async function onSubmit(values) {
-    await updateBrewerySettings({
-      variables: {
-        updatedSettings: values,
-      },
-    });
-    setShowUpdated(true);
-    toggleVisibility();
-  }
-
-  if (!settings) {
-    return null;
-  }
-
-  const mainForm = (
-    <Form
-      onSubmit={onSubmit}
-      initialValues={updatedSettings}
-      render={({ handleSubmit, dirty }) => (
-        <form onSubmit={handleSubmit} noValidate>
-          <TextField
-            label={i18n.translate("Header.editDialog.breweryName")}
-            name="breweryName"
-          />
-          <DialogActions>
-            <Button onClick={toggleVisibility} color="primary">
-              {i18n.translate("Header.editDialog.cancel")}
-            </Button>
-            <Button onClick={handleSubmit} disabled={!dirty} color="secondary">
-              {i18n.translate("Header.editDialog.update")}
-            </Button>
-          </DialogActions>
-        </form>
-      )}
-    />
-  );
-  return (
-    <>
-      <Dialog
-        open={open}
-        onClose={toggleVisibility}
-        aria-labelledby="draggable-dialog-title"
-      >
-        <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
-          {i18n.translate("Header.editDialog.title", {
-            name: settings.breweryName,
-          })}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {i18n.translate("Header.editDialog.body", {
-              name: settings.breweryName,
-            })}
-          </DialogContentText>
-          {mainForm}
-        </DialogContent>
-      </Dialog>
-      <Snackbar
-        open={showUpdated}
-        onClose={() => setShowUpdated(false)}
-        message={updatedText}
-      />
-    </>
-  );
-}
-
-EditBreweryNameDialog.propTypes = {
-  settings: PropTypes.object,
-  open: PropTypes.bool.isRequired,
-  toggleVisibility: PropTypes.func.isRequired,
-  i18n: PropTypes.object.isRequired,
-};

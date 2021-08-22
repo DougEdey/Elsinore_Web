@@ -28,7 +28,8 @@
       "title": "Delete {name}?",
       "body": "Are you sure you want to delete {name}? This is not reversible!",
       "cancel": "Cancel",
-      "delete": "Delete"
+      "delete": "Delete",
+      "deleted": "Deleted {name}."
     }
   },
   "ActionFab": {

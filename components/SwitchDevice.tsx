@@ -1,13 +1,17 @@
 import React from "react";
-import PropTypes from "prop-types";
-import { Card, CardContent, Typography, Switch } from "@material-ui/core";
+import { Card, CardContent, Switch, CardHeader } from "@material-ui/core";
 import { useMutation } from "@apollo/client";
 
+import { SwitchesQueryData } from "./graphql/SwitchListQuery.graphql";
 import ModifySwitchMutation from "./graphql/ModifySwitchMutation.graphql";
 
-export default function SwitchDevice({ device }) {
+type SwitchProps = {
+  device: SwitchesQueryData.Switches;
+};
+
+export default function SwitchDevice({ device }: SwitchProps) {
   const [modifySwitch] = useMutation(ModifySwitchMutation);
-  const toggleOutput = (event) => {
+  const toggleOutput = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newState = event.target.checked ? "on" : "off";
     const newSettings = {
       id: device.id,
@@ -20,16 +24,10 @@ export default function SwitchDevice({ device }) {
 
   return (
     <Card key={device.id} variant="outlined">
+      <CardHeader title={device.name} />
       <CardContent>
-        <Typography colour="textSecondary" gutterBottom>
-          {device.name}
-        </Typography>
         <Switch checked={device.state === "on"} onChange={toggleOutput} />
       </CardContent>
     </Card>
   );
 }
-
-SwitchDevice.propTypes = {
-  device: PropTypes.object.isRequired,
-};

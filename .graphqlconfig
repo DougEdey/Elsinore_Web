@@ -1,0 +1,4 @@
+{
+  "schema": "remote-schema.graphql",
+  "include": ["**/*.graphql"]
+}

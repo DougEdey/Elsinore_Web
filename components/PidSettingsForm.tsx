@@ -1,15 +1,23 @@
-import React from "react";
+import React, { ChangeEvent } from "react";
 import _ from "lodash";
-import PropTypes from "prop-types";
 import { useI18n } from "@shopify/react-i18n";
 import { Button, TextField, Grid } from "@material-ui/core";
+
+import { TemperatureControllerFieldsFragmentData } from "./graphql/TemperatureControllerFields.graphql";
+
+type PidSettingsFormProps = {
+  temperatureController: TemperatureControllerFieldsFragmentData;
+  handleSubmit: (fieldValues: any) => void;
+  handleChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  type: string;
+};
 
 export default function PidSettingsForm({
   temperatureController,
   handleSubmit,
   handleChange,
   type,
-}) {
+}: PidSettingsFormProps) {
   const [i18n] = useI18n();
 
   return (
@@ -75,10 +83,3 @@ export default function PidSettingsForm({
     </Grid>
   );
 }
-
-PidSettingsForm.propTypes = {
-  temperatureController: PropTypes.object.isRequired,
-  handleSubmit: PropTypes.func.isRequired,
-  handleChange: PropTypes.func.isRequired,
-  type: PropTypes.string.isRequired,
-};

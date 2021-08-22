@@ -6,6 +6,7 @@ import {
   CardContent,
   Typography,
   IconButton,
+  CardHeader,
 } from "@material-ui/core";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
 import { useI18n } from "@shopify/react-i18n";
@@ -35,10 +36,8 @@ export default function NoDevices() {
   return (
     <>
       <Card className={classes.root} key="no_devices">
+        <CardHeader title={i18n.translate("Device.noDevices")} />
         <CardContent>
-          <Typography colour="textSecondary" gutterBottom>
-            {i18n.translate("Device.noDevices")}
-          </Typography>
           <Typography paragraph>
             {i18n.translate("Device.noDevicesInstructions")}
           </Typography>

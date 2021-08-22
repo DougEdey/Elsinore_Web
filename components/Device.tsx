@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
+import React, { ChangeEvent, useState } from "react";
 import _ from "lodash";
 import {
   Button,
@@ -32,6 +31,7 @@ import PidSettingsForm from "./PidSettingsForm";
 import DeleteDeviceDialog from "./DeleteDeviceDialog";
 import CircularProgressWithLabel from "./CircularProgressWithLabel";
 import UpdateTemperatureController from "./graphql/UpdateTemperatureController.graphql";
+import { TemperatureControllerFieldsFragmentData } from "./graphql/TemperatureControllerFields.graphql";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -63,7 +63,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Device({ temperatureController }) {
+type DeviceProps = {
+  temperatureController: TemperatureControllerFieldsFragmentData;
+};
+
+export default function Device({ temperatureController }: DeviceProps) {
   const [i18n] = useI18n();
   const classes = useStyles();
   const [expanded, setExpanded] = useState(false);
@@ -72,9 +76,10 @@ export default function Device({ temperatureController }) {
   const [expandedManual, setExpandedManual] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
 
-  const multipleProbes = temperatureController.tempProbeDetails.length > 1;
+  const multipleProbes =
+    (temperatureController.tempProbeDetails || []).length > 1;
 
-  const handleExpandClick = (pane) => {
+  const handleExpandClick = (pane: string) => {
     if (pane === "general") {
       setExpanded(!expanded);
       setExpandedHeat(false);
@@ -99,13 +104,13 @@ export default function Device({ temperatureController }) {
   };
 
   const [heatConfigured, setHeatConfigured] = useState(
-    temperatureController.heatSettings.configured
+    temperatureController.heatSettings?.configured || false
   );
   const [coolConfigured, setCoolConfigured] = useState(
-    temperatureController.coolSettings.configured
+    temperatureController.coolSettings?.configured || false
   );
   const [manualConfigured, setManualConfigured] = useState(
-    temperatureController.manualSettings.configured
+    temperatureController.manualSettings?.configured || false
   );
 
   const [
@@ -119,9 +124,9 @@ export default function Device({ temperatureController }) {
     _.cloneDeep(temperatureController)
   );
 
-  async function onSubmit(event) {
+  async function onSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
-    const submitValue = _.cloneDeep(formValue);
+    const submitValue = _.cloneDeep(formValue) as any;
     delete submitValue.__typename;
     delete submitValue.coolSettings.__typename;
     delete submitValue.heatSettings.__typename;
@@ -136,27 +141,29 @@ export default function Device({ temperatureController }) {
     return { status: "success" };
   }
 
-  const handleChange = (event) => {
-    let value = event.target.value;
-
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     switch (event.target.name) {
       case "manualSettings.configured": {
-        value = event.target.checked;
+        const value = event.target.checked;
         setManualConfigured(value);
-        break;
+        setFormValue(_.set(formValue, event.target.name, value));
+        return;
       }
       case "heatSettings.configured": {
-        value = event.target.checked;
+        const value = event.target.checked;
         setHeatConfigured(value);
-        break;
+        setFormValue(_.set(formValue, event.target.name, value));
+        return;
       }
       case "coolSettings.configured": {
-        value = event.target.checked;
+        const value = event.target.checked;
         setCoolConfigured(value);
-        break;
+        setFormValue(_.set(formValue, event.target.name, value));
+        return;
       }
     }
 
+    const value = event.target.value;
     setFormValue(_.set(formValue, event.target.name, value));
   };
 
@@ -169,13 +176,13 @@ export default function Device({ temperatureController }) {
     if (temperatureController.mode === "auto") {
       return (
         <CircularProgressWithLabel
-          value={temperatureController.calculatedDuty}
+          value={temperatureController.calculatedDuty || 0}
         />
       );
     } else if (temperatureController.mode === "manual") {
       return (
         <CircularProgressWithLabel
-          value={temperatureController.manualSettings.dutyCycle}
+          value={temperatureController.manualSettings?.dutyCycle || 0}
         />
       );
     } else if (temperatureController.mode === "off") {
@@ -188,7 +195,7 @@ export default function Device({ temperatureController }) {
   };
 
   const mainForm = (
-    <Grid container direction="row" justifyContent="flex-end">
+    <Grid container direction="row" alignContent="flex-end">
       <form onSubmit={onSubmit} noValidate>
         <Grid item>
           <TextField
@@ -241,9 +248,8 @@ export default function Device({ temperatureController }) {
           <FormControlLabel
             control={
               <Checkbox
-                formControlProps={{ row: true }}
                 name="heatSettings.configured"
-                checked={formValue.heatSettings.configured}
+                checked={formValue.heatSettings?.configured || false}
                 onChange={handleChange}
                 aria-label="Heat Settings Configured"
               />
@@ -255,9 +261,8 @@ export default function Device({ temperatureController }) {
           <FormControlLabel
             control={
               <Checkbox
-                formControlProps={{ row: true }}
                 name="coolSettings.configured"
-                checked={formValue.coolSettings.configured}
+                checked={formValue.coolSettings?.configured || false}
                 onChange={handleChange}
               />
             }
@@ -268,9 +273,8 @@ export default function Device({ temperatureController }) {
           <FormControlLabel
             control={
               <Checkbox
-                formControlProps={{ row: true }}
                 name="manualSettings.configured"
-                checked={formValue.manualSettings.configured}
+                checked={formValue.manualSettings?.configured || false}
                 onChange={handleChange}
               />
             }
@@ -307,21 +311,28 @@ export default function Device({ temperatureController }) {
           }
         />
         <CardContent>
-          {temperatureController.tempProbeDetails.map((probe) => {
-            let probeDescription = probe.reading;
-            if (multipleProbes) {
-              probeDescription = `${probe.name} - ${probe.reading}`;
-            }
-            return (
-              <Typography
-                key={probe.physAddr}
-                className={classes.probe}
-                component="h2"
-              >
-                {probeDescription}
-              </Typography>
-            );
-          })}
+          {temperatureController.tempProbeDetails
+            ?.flatMap((probe) => {
+              if (probe === null || probe === undefined) {
+                return [];
+              }
+              return probe;
+            })
+            .map((probe) => {
+              let probeDescription = probe.reading;
+              if (multipleProbes) {
+                probeDescription = `${probe.name} - ${probe.reading}`;
+              }
+              return (
+                <Typography
+                  key={probe.physAddr}
+                  className={classes.probe}
+                  component="h2"
+                >
+                  {probeDescription}
+                </Typography>
+              );
+            })}
           {currentState()}
         </CardContent>
         <CardActions disableSpacing>
@@ -387,7 +398,7 @@ export default function Device({ temperatureController }) {
         </Collapse>
         <Collapse in={expandedManual} timeout="auto" unmountOnExit>
           <CardContent>
-            <Grid container direction="row" justifyContent="flex-end">
+            <Grid container direction="row" alignContent="flex-end">
               <form onSubmit={onSubmit} noValidate>
                 <Grid item>
                   <TextField
@@ -427,19 +438,14 @@ export default function Device({ temperatureController }) {
       </Card>
       <Snackbar open={controllerUpdating} message="Controller updating" />
       <Snackbar
-        open={updateError}
+        open={updateError !== undefined}
         message={`Error updating probe! ${updateError?.message}`}
       />
       <DeleteDeviceDialog
         device={temperatureController}
         open={deleteOpen}
         setOpen={setDeleteOpen}
-        i18n={i18n}
       />
     </>
   );
 }
-
-Device.propTypes = {
-  temperatureController: PropTypes.object.isRequired,
-};

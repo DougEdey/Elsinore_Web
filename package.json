@@ -8,7 +8,8 @@
     "lint": "./node_modules/.bin/eslint ./",
     "lint-fix": "./node_modules/.bin/eslint ./ --fix",
     "test": "jest --env=jsdom --silent",
-    "test-watch": "jest --env=jsdom --watch --silent"
+    "test-watch": "jest --env=jsdom --watch --silent",
+    "graphql-typescript-definitions": "graphql-typescript-definitions --schema-types-path types/"
   },
   "jest": {
     "transform": {
@@ -30,10 +31,13 @@
     "@shopify/react-form": "^1.0.1",
     "@shopify/react-hooks": "^2.0.1",
     "@shopify/react-i18n": "^6.0.2",
+    "@typescript-eslint/eslint-plugin": "^4.29.2",
+    "@typescript-eslint/parser": "^4.29.2",
     "clsx": "^1.1.1",
     "deepmerge": "^4.2.2",
-    "graphql": "^15.5.0",
+    "graphql": "^14.0.0",
     "graphql-tag": "^2.12.4",
+    "graphql-typescript-definitions": "^2.0.7",
     "lodash": "^4.17.21",
     "mui-rff": "^3.0.9",
     "next": "^10.2.3",
@@ -45,13 +49,15 @@
     "react-dom": "<17.0.0",
     "react-final-form": "^6.5.3",
     "react-final-form-listeners": "^1.0.3",
-    "typescript": "^4.3.2"
+    "typescript": "^4.3.2",
+    "typescript-eslint": "^0.0.1-alpha.0"
   },
   "license": "MIT",
   "devDependencies": {
     "@shopify/eslint-plugin": "^40.2.3",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^12.0.0",
+    "@types/lodash": "^4.14.172",
     "babel-plugin-graphql-tag": "^3.3.0",
     "babel-plugin-import-graphql": "^2.8.1",
     "enzyme": "^3.11.0",
@@ -62,5 +68,11 @@
     "msw": "^0.34.0",
     "next-page-tester": "^0.27.2",
     "prettier": "^2.3.1"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
   }
 }

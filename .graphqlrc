@@ -1,6 +1,0 @@
-{
-  "schema": "https://elsinore:8000/graphql"
-  "includes": [
-    "**/*.graphql"
-  ]
-}

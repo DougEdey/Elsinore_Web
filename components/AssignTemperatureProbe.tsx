@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import { useMutation, useLazyQuery } from "@apollo/client";
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -21,7 +20,9 @@ import { useI18n } from "@shopify/react-i18n";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import { useField, useForm, getValues } from "@shopify/react-form";
 
-import AssignProbeMutation from "./graphql/AssignProbeMutation.graphql";
+import AssignProbeMutation, {
+  AssignProbeMutationMutationPartialData,
+} from "./graphql/AssignProbeMutation.graphql";
 import getProbes from "./graphql/TempProbesQuery.graphql";
 
 const useStyles = makeStyles((theme) => ({
@@ -43,7 +44,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function AssignTemperatureProbe({ open, setOpen }) {
+type AssignProps = {
+  open: boolean;
+  setOpen: Function;
+};
+export default function AssignTemperatureProbe({ open, setOpen }: AssignProps) {
   const [i18n] = useI18n();
   const classes = useStyles();
   const [assignProbe] = useMutation(AssignProbeMutation);
@@ -85,9 +90,9 @@ export default function AssignTemperatureProbe({ open, setOpen }) {
     }
   }, [open, lazyGetProbes]);
 
-  const { submit } = useForm({
+  const { submit } = useForm<typeof fields>({
     fields,
-    onSubmit: async (fieldValues) => {
+    onSubmit: async (fieldValues: any) => {
       const values = getValues(fieldValues);
       await assignProbe({
         variables: { name: values.name, address: values.address },
@@ -107,17 +112,21 @@ export default function AssignTemperatureProbe({ open, setOpen }) {
 
   const addressOptions =
     data?.probeList?.length > 0 ? (
-      data?.probeList?.map((probe) => {
-        return (
-          <option
-            key={probe.physAddr}
-            aria-label={probe.physAddr}
-            value={probe.physAddr}
-          >
-            {probe.physAddr}
-          </option>
-        );
-      })
+      data?.probeList?.map(
+        (
+          probe: AssignProbeMutationMutationPartialData.AssignProbeTempProbeDetails
+        ) => {
+          return (
+            <option
+              key={probe.physAddr}
+              aria-label={probe.physAddr || ""}
+              value={probe.physAddr || ""}
+            >
+              {probe.physAddr}
+            </option>
+          );
+        }
+      )
     ) : (
       <option value="">
         {i18n.translate("ActionFab.assignProbeDialog.noProbes")}
@@ -125,6 +134,22 @@ export default function AssignTemperatureProbe({ open, setOpen }) {
     );
 
   const createdText = `Created ${fields.name.value}`;
+
+  // @ts-ignore
+  const selectInput = (
+    <Select
+      {...fields.address}
+      startAdornment={
+        <InputAdornment position="start">
+          <IconButton onClick={() => lazyGetProbes()}>
+            <RefreshIcon />
+          </IconButton>
+        </InputAdornment>
+      }
+    >
+      {addressOptions}
+    </Select>
+  );
 
   return (
     <>
@@ -151,18 +176,7 @@ export default function AssignTemperatureProbe({ open, setOpen }) {
               <InputLabel htmlFor="address">
                 {i18n.translate("ActionFab.assignProbeDialog.form.address")}
               </InputLabel>
-              <Select
-                {...fields.address}
-                startAdornment={
-                  <InputAdornment position="start">
-                    <IconButton onClick={() => lazyGetProbes()}>
-                      <RefreshIcon />
-                    </IconButton>
-                  </InputAdornment>
-                }
-              >
-                {addressOptions}
-              </Select>
+              {selectInput}
             </FormControl>
           </DialogContent>
           <DialogActions>
@@ -183,8 +197,3 @@ export default function AssignTemperatureProbe({ open, setOpen }) {
     </>
   );
 }
-
-AssignTemperatureProbe.propTypes = {
-  open: PropTypes.bool.isRequired,
-  setOpen: PropTypes.func.isRequired,
-};

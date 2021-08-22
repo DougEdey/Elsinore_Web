@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import PropTypes from "prop-types";
 import {
   Button,
   Dialog,
@@ -13,14 +12,26 @@ import { useMutation } from "@apollo/client";
 import { useI18n } from "@shopify/react-i18n";
 
 import DeleteTemperatureController from "./graphql/DeleteTemperatureController.graphql";
+import { TemperatureControllerFieldsFragmentData } from "./graphql/TemperatureControllerFields.graphql";
 
-export default function DeleteDeviceDialog({ device, open, setOpen }) {
+type DeleteDeviceDialogProps = {
+  device: TemperatureControllerFieldsFragmentData;
+  open: boolean;
+  setOpen: Function;
+};
+
+export default function DeleteDeviceDialog({
+  device,
+  open,
+  setOpen,
+}: DeleteDeviceDialogProps) {
   const [i18n] = useI18n();
 
-  let deleteMutation = null;
-  if (device.__typename === "TemperatureController") {
-    deleteMutation = DeleteTemperatureController;
-  }
+  const deleteMutation = DeleteTemperatureController;
+  // if (device.__typename === "TemperatureController") {
+  //   deleteMutation = ;
+  // }
+
   const [deleteDevice] = useMutation(deleteMutation);
   const [showDeleted, setShowDeleted] = useState(false);
 
@@ -74,9 +85,3 @@ export default function DeleteDeviceDialog({ device, open, setOpen }) {
     </>
   );
 }
-
-DeleteDeviceDialog.propTypes = {
-  device: PropTypes.object.isRequired,
-  open: PropTypes.bool.isRequired,
-  setOpen: PropTypes.func.isRequired,
-};
